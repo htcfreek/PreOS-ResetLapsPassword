@@ -12,7 +12,7 @@ A PreOS-Package for Matrix42 Empirum that can reset the LAPS password of a compu
 You can use the package with Windows 11 (Windows LAPS & Legacy LAPS) and Windows 10 (Legacy LAPS).
 The package requires an up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1!
 
-The package has the Legacy LAPS PowerShell module form the Microsoft LAPS installer included. (Link to the installer: https://www.microsoft.com/en-us/download/details.aspx?id=46899)
+The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: https://www.microsoft.com/en-us/download/details.aspx?id=46899)
 
 ### Features
 - Support for both LAPS versions (Legacy & Windows).
@@ -20,6 +20,7 @@ The package has the Legacy LAPS PowerShell module form the Microsoft LAPS instal
 - Using the computer account credentials for password reset.
 - Using the domain join credentials when setting only the expiration date under Windows LAPS.
 - Forcing the usage of Legacy LAPS if Windows LAPS is available too.
+- Skipping package execution if the Computer object in Empirum is not configured for Domain join.
 
 ### Package variables
 
@@ -30,12 +31,18 @@ The package has the Legacy LAPS PowerShell module form the Microsoft LAPS instal
 - **ForceLegacyLapsModuleUsage	:	0 (default) or 1**
    <br />Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package.<br />(On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default.)
 
+### External variables
+To use the domain join credentials from the DomainJoin package, the following external variables are used:
+- FQDN
+- DomainJoin.DomainJoinCredentialsUser		: Benutzer mit den Berechtigungen das Computer-Objekt in der Domäne zu verschieben.
+- DomainJoin.DomainJoinCredentialsPassword 	: Passwort für den zuvor genannten Benutzer.
+
 
 ## Download and Usage
-Download the files form [here](http://github.com/htcfreek/preos-resetlapspassword/release/latest).
-  
-After downloading the release file, please extract its content to `%EmpirumDir%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot. Then you can assign the package and set the package variables if you want to change the default behaviour.
-
+1. Download the files form [here](http://github.com/htcfreek/preos-resetlapspassword/release/latest).
+2. Please extract the downloaded file to `%EmpirumDir%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot (Matrix42 Management Console > Configuration > Depot).
+3. Move the package in the depot register "Matrix42 PreOS Packages" after the DomainJoin package and activate it for deployment ("Ready to install").
+4. Then you can assign the package and set the package variables if you want to change the default behaviour.
 
 
 ## Support
@@ -44,13 +51,13 @@ After downloading the release file, please extract its content to `%EmpirumDir%\
 If you have any problems or want to suggest a new feature please fill a bug in this repository under https://github.com/htcfreek/PreOS-ResetLapsPassword/issues/new.
 
 
-
 # Credits
 This repository includes scripts (and other files) that where created while my day to day job work. I want to say thank you to my employer who allows me to share them with you (the community).
 
 
 # Disclaimer
 All named product and company names are trademarks (™) or registered (®) trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
+
 
 # License
 This Repository is licensed to you under the MIT license.<br />
