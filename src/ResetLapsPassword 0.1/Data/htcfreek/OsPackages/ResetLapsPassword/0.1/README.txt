@@ -20,6 +20,7 @@ The package has the Legacy LAPS PowerShell module from the Microsoft LAPS instal
 FEATURES:
 - Support for both LAPS versions (Legacy & Windows).
 - Immediate password reset with Windows LAPS.
+- Supports AzureAD for resetting the password immediately.
 - Using the computer account credentials for password reset.
 - Using the domain join credentials when setting only the expiration date under Windows LAPS.
 - Forcing the usage of Legacy LAPS if Windows LAPS is available too.
