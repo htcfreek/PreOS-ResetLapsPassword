@@ -5,7 +5,7 @@
 <a href="https://github.com/htcfreek/preos-resetlapspassword/stargazers"><img src="https://img.shields.io/github/stars/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/watchers"><img src="https://img.shields.io/github/watchers/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/network/members"><img src="https://img.shields.io/github/forks/htcfreek/preos-resetlapspassword" /></a>
 
 
-# PreOS-ResetLapsPassword
+# ResetLapsPassword
 
 A PreOS-Package for Matrix42 Empirum that can reset the LAPS password of a computer on reinstall.
 
