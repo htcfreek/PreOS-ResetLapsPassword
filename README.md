@@ -7,14 +7,13 @@
 
 # PreOS-ResetLapsPassword
 
-A PreOS-Package for Matrix42 Empirum that can reset thet LAPS password of a computer on reinstall.
+A PreOS-Package for Matrix42 Empirum that can reset the LAPS password of a computer on reinstall.
 
-You can use the package with Windows 11 (Windows LAPS & Legacy LAPS) and Windows 10 (Legacy LAPS)
-The packeage requires an up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1! 
+You can use the package with Windows 11 (Windows LAPS & Legacy LAPS) and Windows 10 (Legacy LAPS) The package requires an up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1!
 
 ### Features
 - Support for both LAPS versions (Legacy & Windows).
-- Immidiate password reset with Windows LAPS.
+- Immediate password reset with Windows LAPS.
 - Using the computer account credentials for password reset.
 - Using the domain join credentials when setting only the expiration date under Windows LAPS.
 - Forcing the usage of Legacy LAPS if Windows LAPS is available too.
@@ -23,9 +22,9 @@ The packeage requires an up to date Empirum WinPE environment (at least 1.8.12) 
 
 | Variable | Values | Behavior | Note |
 |--------------|-----------|------------|------------|
-| WindowsLapsResetImmediately | 0 (default) or 1 | Reset the password immidiatly instead of chnaging the expiration time. | Only supported with Windows LAPS on Win11 IP Build 25145 and later. |
+| WindowsLapsResetImmediately | 0 (default) or 1 | Reset the password immediately instead of changing the expiration time. | Only supported with Windows LAPS on Win11 IP Build 25145 and later. |
 | WindowsLapsUseDJCredentials | 0 (default) or 1 | Use the DomainJoin package user credentials instead of the computer account context. | (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.) |
-| ForceLegacyLapsModuleUsage | 0 (default) or 1 | Enforce the usgae of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. | On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default. |
+| ForceLegacyLapsModuleUsage | 0 (default) or 1 | Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. | On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default. |
 
 
 ## Download and Usage
