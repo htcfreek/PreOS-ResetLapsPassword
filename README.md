@@ -40,7 +40,7 @@ To use the domain join credentials from the DomainJoin package, the following ex
 
 ## Download and Usage
 1. Download the files form [here](http://github.com/htcfreek/preos-resetlapspassword/release/latest).
-2. Please extract the downloaded file to `%EmpirumDir%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot (Matrix42 Management Console > Configuration > Depot).
+2. Please extract the downloaded file to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot (Matrix42 Management Console > Configuration > Depot).
 3. Move the package in the depot register "Matrix42 PreOS Packages" after the DomainJoin package and activate it for deployment ("Ready to install").
 4. Then you can assign the package and set the package variables if you want to change the default behaviour.
 
