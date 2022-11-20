@@ -34,8 +34,8 @@ The package has the Legacy LAPS PowerShell module from the Microsoft LAPS instal
 ### External variables
 To use the domain join credentials from the DomainJoin package, the following external variables are used:
 - FQDN
-- DomainJoin.DomainJoinCredentialsUser		: Benutzer mit den Berechtigungen das Computer-Objekt in der Domäne zu verschieben.
-- DomainJoin.DomainJoinCredentialsPassword 	: Passwort für den zuvor genannten Benutzer.
+- DomainJoin.DomainJoinCredentialsUser		: User with the permissions to join the computer to your Domain.
+- DomainJoin.DomainJoinCredentialsPassword 	: Password of the join user.
 
 
 ## Download and Usage
