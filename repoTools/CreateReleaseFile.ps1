@@ -24,9 +24,7 @@ Param(
 [String]$ReleaseDir="\release"
 [String]$OutFileName="$($ReleaseName)_v$($ReleaseVersion).zip"
 [String[]]$CompressFiles = @(
-    "$($RepoDir)$($SrcDir)\*",
-    "$($RepoDir)\LICENSE.md",
-    "$($RepoDir)\DISCLAIMER.md"
+    "$($RepoDir)$($SrcDir)\*"
 )
 [String]$HashFile="$($RepoDir)$($ReleaseDir)\$($OutFileName).sha256"
 
