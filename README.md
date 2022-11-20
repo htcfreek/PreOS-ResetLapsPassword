@@ -38,14 +38,14 @@ To use the domain join credentials from the DomainJoin package, the following ex
 - DomainJoin.DomainJoinCredentialsPassword 	: Password of the join user.
 
 
-## Download and Usage
+# Download and Usage
 1. Download the files form [here](http://github.com/htcfreek/preos-resetlapspassword/release/latest).
 2. Please extract the downloaded file to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot (Matrix42 Management Console > Configuration > Depot).
 3. Move the package in the depot register "Matrix42 PreOS Packages" after the DomainJoin package and activate it for deployment ("Ready to install").
 4. Then you can assign the package and set the package variables if you want to change the default behaviour.
 
 
-## Support
+# Support
 ⚠ The provided code/content in this repository isn't developed by "Matrix42 AG". It was created by the repository owner. This means that the company "Matrix42 AG" isn't responsible to answer any support requests regarding the tools, scripts and packages in this repository in any way!
 
 If you have any problems or want to suggest a new feature please fill a bug in this repository under https://github.com/htcfreek/PreOS-ResetLapsPassword/issues/new.
@@ -54,9 +54,11 @@ If you have any problems or want to suggest a new feature please fill a bug in t
 # Credits
 This repository includes scripts (and other files) that where created while my day to day job work. I want to say thank you to my employer who allows me to share them with you (the community).
 
+A big thank you to Mr. Jochen Schmitt, who mentioned this package in his [blog](https://www.wpm-blog.de/) and helped me with testing the initial release.
+
 
 # Disclaimer
-All named product and company names are trademarks (™) or registered (®) trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
+Product names and company names are trademarks (™) or registered (®) trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
 
 
 # License

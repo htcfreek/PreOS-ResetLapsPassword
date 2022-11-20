@@ -3,6 +3,10 @@
 ## Repo URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 ########################################
 
+PreOS-Package: ResetLapsPassword
+Author: Heiko Horwedel (htcfreek)
+Version: 0.1-prerelease
+
 
 PACKAGE INFORMATION
 -------------------
@@ -58,10 +62,12 @@ CREDITS
 -------
 This repository includes scripts (and other files) that where created while my day to day job work. I want to say thank you to my employer who allows me to share them with you (the community).
 
+A big thank you to Mr. Jochen Schmitt, who mentioned this package in his blog (https://www.wpm-blog.de/) and helped me with testing the initial release.
+
 
 DISCLAIMER
 ----------
-All named product and company names are trademarks (™) or registered (®) trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
+Product names and company names are trademarks (™) or registered (®) trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
 
 
 LICENSE
