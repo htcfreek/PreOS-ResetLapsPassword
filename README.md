@@ -20,11 +20,12 @@ You can use the package with Windows 11 (Windows LAPS & Legacy LAPS) and Windows
 
 ### Package variables
 
-| Variable | Values | Behavior | Note |
-|--------------|-----------|------------|------------|
-| WindowsLapsResetImmediately | 0 (default) or 1 | Reset the password immediately instead of changing the expiration time. | Only supported with Windows LAPS on Win11 IP Build 25145 and later. |
-| WindowsLapsUseDJCredentials | 0 (default) or 1 | Use the DomainJoin package user credentials instead of the computer account context. | (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.) |
-| ForceLegacyLapsModuleUsage | 0 (default) or 1 | Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. | On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default. |
+- **WindowsLapsResetImmediately	:	0 (default) or 1**
+		Reset the password immediately instead of changing the expiration time. (Only supported with Windows LAPS on Win11 IP Build 25145 and later.)
+- **WindowsLapsUseDJCredentials	:	0 (default) or 1**
+		Use the DomainJoin package user credentials instead of the computer account context. (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.)
+- **ForceLegacyLapsModuleUsage	:	0 (default) or 1**
+		Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. (On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default.)
 
 
 ## Download and Usage
