@@ -19,7 +19,7 @@ The packeage requires an up to date Empirum WinPE environment (at least 1.8.12) 
 - Using the domain join credentials when setting only the expiration date under Windows LAPS.
 - Forcing the usage of Legacy LAPS if Windows LAPS is available too.
 
-**Package variables**
+### Package variables
 
 | Variable | Values | Behavior | Note |
 |--------------|-----------|------------|------------|
@@ -35,14 +35,14 @@ After downloading the release file, please extract its content to `%EmpirumDir%\
 
 
 
-## ⚠ Support Note:
-> The provided code/content in this repository isn't developed by "Matrix42 AG". It was created by the repository owner. This means that the company "Matrix42 AG" isn't responsible to answer any support requests regarding the tools, scripts and packages in this repository in any way!
+## Support
+⚠ The provided code/content in this repository isn't developed by "Matrix42 AG". It was created by the repository owner. This means that the company "Matrix42 AG" isn't responsible to answer any support requests regarding the tools, scripts and packages in this repository in any way!
 
 If you have any problems or want to suggest a new feature please fill a bug in this repository under https://github.com/htcfreek/PreOS-ResetLapsPassword/issues/new.
 
 
 
-# CREDITS
+# Credits
 This repository includes scripts (and other files) that where created while my day to day job work. I want to say thank you to my employer who allows me to share them with you (the community).
 
 
