@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EmpirumPackage UUID="a74065c8-5ee4-43b9-926b-a597fa27aca5" Name="ResetLapsPassword 0.1" Type="OSPackage" Version="1.0">
+  <VersionInformation Version="0.1" Revision="0" />
+  <TargetPath />
+  <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
+  <DatabaseSettings></DatabaseSettings>
+  <ObjectModelSerialisation>
+    <ObjectModel Name="Matrix42.Empirum.PLF.Data.CoreDataAccess.Model">
+      <Software xmlns:i="http://www.w3.org/2001/XMLSchema-instance" z:Id="i1" xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/" xmlns="http://schemas.datacontract.org/2004/07/Matrix42.Empirum.PLF.Data.CoreDataAccess.Model">
+        <CatalogueID i:nil="true" />
+        <GenerallyReleased>0001-01-01T00:00:00</GenerallyReleased>
+        <Icon i:nil="true" />
+        <Id>a74065c8-5ee4-43b9-926b-a597fa27aca5</Id>
+        <Name>ResetLapsPassword 0.1</Name>
+        <PackageAssignments />
+        <ProductKey i:nil="true" />
+        <Revision>0</Revision>
+        <SoftwareDependencies />
+        <SoftwareSequences />
+        <SoftwareVarDefinitions>
+          <SoftwareVarDefinition z:Id="i2">
+            <AllowNull>0</AllowNull>
+            <ComputerVarDefinition z:Id="i3">
+              <AllowNull>1</AllowNull>
+              <Children>
+                <ComputerVarDefinition z:Id="i4">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>1</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>Reset the password immediately instead of changing the expiration time. (Only supported with Windows LAPS on Win11 IP Build 25145 and later.)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2022-11-11T11:59:14.4988379+01:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>WindowsLapsResetImmediately</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
+                <ComputerVarDefinition z:Id="i5">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>1</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>Use the DomainJoin package user credentials instead of the computer account context. (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2022-11-11T12:02:51.6365081+01:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>WindowsLapsUseDJCredentials</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
+                <ComputerVarDefinition z:Id="i6">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>1</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. (On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default.)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2022-11-11T12:36:39.3978234+01:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>ForceLegacyLapsModuleUsage</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
+              </Children>
+              <Collection>0</Collection>
+              <ComboType>9</ComboType>
+              <DefaultValue i:nil="true" />
+              <Description>This is the container for the os package variables.</Description>
+              <Id>0</Id>
+              <LastUpdate>2022-11-10T10:42:56.070828+01:00</LastUpdate>
+              <LowerValue i:nil="true" />
+              <Name>ResetLapsPassword</Name>
+              <Objecttype>39</Objecttype>
+              <Parent i:nil="true" />
+              <ParentId i:nil="true" />
+              <PredefinedVariableValues />
+              <Sequence i:nil="true" />
+              <ShowFlag>0</ShowFlag>
+              <SoftwareVarDefinitions />
+              <Type>0</Type>
+              <UpperValue i:nil="true" />
+            </ComputerVarDefinition>
+            <Package i:nil="true" />
+            <SoftwareId>00000000-0000-0000-0000-000000000000</SoftwareId>
+            <VariableId>0</VariableId>
+          </SoftwareVarDefinition>
+        </SoftwareVarDefinitions>
+        <Vendor>htcfreek</Vendor>
+        <Version>0.1</Version>
+        <VersionFile i:nil="true" />
+        <AllowUnInstallation>false</AllowUnInstallation>
+        <Author i:nil="true" />
+        <Build i:nil="true" />
+        <CallAsynchronous>false</CallAsynchronous>
+        <Category>0</Category>
+        <CheckFile i:nil="true" />
+        <CheckReg i:nil="true" />
+        <CreationDate i:nil="true" />
+        <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
+        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\0.1</Directory>
+        <Discontinue i:nil="true" />
+        <DiskFreeApplication>0</DiskFreeApplication>
+        <DiskFreeSystem>0</DiskFreeSystem>
+        <Distribution>false</Distribution>
+        <DocuFileName i:nil="true" />
+        <Duration>0</Duration>
+        <ExternalSetup>false</ExternalSetup>
+        <InfoCmdLine i:nil="true" />
+        <InfoDep i:nil="true" />
+        <InfoFile i:nil="true" />
+        <InstallContext>0</InstallContext>
+        <InstallReady>0</InstallReady>
+        <InventoryID i:nil="true" />
+        <LastChange i:nil="true" />
+        <LicenceCount>0</LicenceCount>
+        <MachineKeyName i:nil="true" />
+        <Method i:nil="true" />
+        <MinBandwidth i:nil="true" />
+        <PackageName>htcfreek\OsPackages\ResetLapsPassword\0.1</PackageName>
+        <ParentID i:nil="true" />
+        <Path i:nil="true" />
+        <ProcessorSpeed>0</ProcessorSpeed>
+        <RAM>0</RAM>
+        <RebootRequired>0</RebootRequired>
+        <Script i:nil="true" />
+        <Sequence i:nil="true" />
+        <SoftwareAUTFiles />
+        <SoftwareConditions />
+        <SoftwareDepotRegister z:Id="i7">
+          <Check i:nil="true" />
+          <CheckFile i:nil="true" />
+          <Description i:nil="true" />
+          <Distribution i:nil="true" />
+          <GlobalGroup i:nil="true" />
+          <IDPK>00000000-0000-0000-0000-000000000000</IDPK>
+          <Icon i:nil="true" />
+          <LocalGroup i:nil="true" />
+          <LocalUser i:nil="true" />
+          <Name>Matrix42 PreOS Packages</Name>
+          <OSSystems i:nil="true" />
+          <SEQUENCE i:nil="true" />
+          <Softwares />
+          <SupportedOSCapabilities>
+            <OSCapability z:Id="i8">
+              <ID>0</ID>
+              <ItemOSCapabilitiesMappings />
+              <Name>x86</Name>
+              <OSDatas />
+              <UseInSyncJobs>0</UseInSyncJobs>
+            </OSCapability>
+            <OSCapability z:Id="i9">
+              <ID>0</ID>
+              <ItemOSCapabilitiesMappings />
+              <Name>x64</Name>
+              <OSDatas />
+              <UseInSyncJobs>1</UseInSyncJobs>
+            </OSCapability>
+          </SupportedOSCapabilities>
+          <SupportedOSs>
+            <OSData z:Id="i10">
+              <BaseName>Windows PE</BaseName>
+              <BitFlag>8</BitFlag>
+              <ID>0</ID>
+              <InternalName>WinPE 10</InternalName>
+              <ItemOSDataMappings />
+              <Name>WinPE 10</Name>
+              <OSCapabilities />
+              <SequenceID>250</SequenceID>
+              <TextID>WinPE 10</TextID>
+            </OSData>
+          </SupportedOSs>
+          <TEXT>Matrix42 PreOS Packages</TEXT>
+          <TabIcon i:nil="true" />
+        </SoftwareDepotRegister>
+        <SoftwareDomainGroups />
+        <SubType>WinPE</SubType>
+        <SupportedOSCapabilities>
+          <OSCapability z:Ref="i8" />
+          <OSCapability z:Ref="i9" />
+        </SupportedOSCapabilities>
+        <SupportedOSs>
+          <OSData z:Ref="i10" />
+        </SupportedOSs>
+        <Tested i:nil="true" />
+        <TokenId i:nil="true" />
+        <TokenTtl>0</TokenTtl>
+      </Software>
+      <Software />
+      <Software />
+      <Software />
+      <Software />
+    </ObjectModel>
+  </ObjectModelSerialisation>
+</EmpirumPackage>
