@@ -1,49 +1,54 @@
-  
-# => TODO: update repo name, desciption, contents, license, links, /src/Readme.txt, support note...
-
----
 
 <!-- Name des Repositorys muss immer klein geschrieben werden. -->
-<a href="https://github.com/htcfreek/REPO/releases/latest"><img src="https://img.shields.io/github/release/htcfreek/REPO" /></a> <a href="https://github.com/htcfreek/REPO/releases/latest"><img src="https://img.shields.io/github/downloads/htcfreek/REPO/total?label=Downloads" /></a> <a href="LICENSE.md"><img src="https://img.shields.io/github/license/htcfreek/REPO" /></a>
+<a href="https://github.com/htcfreek/preos-resetlapspassword/releases/latest"><img src="https://img.shields.io/github/release/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/releases/latest"><img src="https://img.shields.io/github/downloads/htcfreek/preos-resetlapspassword/total?label=Downloads" /></a> <a href="LICENSE.md"><img src="https://img.shields.io/github/license/htcfreek/preos-resetlapspassword" /></a>
 
-<a href="https://github.com/htcfreek/REPO/stargazers"><img src="https://img.shields.io/github/stars/htcfreek/REPO" /></a> <a href="https://github.com/htcfreek/REPO/watchers"><img src="https://img.shields.io/github/watchers/htcfreek/REPO" /></a> <a href="https://github.com/htcfreek/REPO/network/members"><img src="https://img.shields.io/github/forks/htcfreek/REPO" /></a>
+<a href="https://github.com/htcfreek/preos-resetlapspassword/stargazers"><img src="https://img.shields.io/github/stars/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/watchers"><img src="https://img.shields.io/github/watchers/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/network/members"><img src="https://img.shields.io/github/forks/htcfreek/preos-resetlapspassword" /></a>
 
 
-# repo-template
+# PreOS-ResetLapsPassword
 
-This is my private template for new repositories.
+A PreOS-Package for Matrix42 Empirum that can reset thet LAPS password of a computer on reinstall.
+
+You can use the package with Windows 11 (Windows LAPS & Legacy LAPS) and Windows 10 (Legacy LAPS)
+The packeage requires an up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1! 
+
+### Features
+- Support for both LAPS versions (Legacy & Windows).
+- Immidiate password reset with Windows LAPS.
+- Using the computer account credentials for password reset.
+- Using the domain join credentials when setting only the expiration date under Windows LAPS.
+- Forcing the usage of Legacy LAPS if Windows LAPS is available too.
+
+**Package variables**
+
+| Variable | Values | Behavior | Note |
+|--------------|-----------|------------|------------|
+| WindowsLapsResetImmediately | 0 (default) or 1 | Reset the password immidiatly instead of chnaging the expiration time. | Only supported with Windows LAPS on Win11 IP Build 25145 and later. |
+| WindowsLapsUseDJCredentials | 0 (default) or 1 | Use the DomainJoin package user credentials instead of the computer account context. | (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.) |
+| ForceLegacyLapsModuleUsage | 0 (default) or 1 | Enforce the usgae of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. | On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default. |
+
+
+## Download and Usage
+Download the files form [here](http://github.com/htcfreek/preos-resetlapspassword/release/latest).
   
- // IMAGE //
- 
-
-#### ⚠ Support Note:
-> The provided code/content in this repository isn't developed by "Matrix42 AG". It was created by the repository owner htcfreek (Heiko). This means that the company "Matrix42 AG" isn't responsible to answer any support requestes regarding the tools, scripts and packages in this repository in any way!
+After downloading the release file, please extract its content to `%EmpirumDir%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot. Then you can assign the package and set the package variables if you want to change the default behaviour.
 
 
-#### Contents:
-```
-/.gitignore                       :   Config file for git.
-/src                   		  :   Directory for source files.
-/src/Readme.txt       	          :   Readme.txt which will be included in release.
-/repoTools                        :   Folder for repos scripts and tools.
-/repoTools/CreateReleaseFile.ps1  :   Script to generate files for release.
- ```
 
-## Download
-Download the files form [here](http://github.com/htcfreek/REPO/release/latest).
-  
-## Usage
-To use ....
+## ⚠ Support Note:
+> The provided code/content in this repository isn't developed by "Matrix42 AG". It was created by the repository owner. This means that the company "Matrix42 AG" isn't responsible to answer any support requests regarding the tools, scripts and packages in this repository in any way!
+
+If you have any problems or want to suggest a new feature please fill a bug in this repository under https://github.com/htcfreek/PreOS-ResetLapsPassword/issues/new.
+
 
 
 # CREDITS
 This repository includes scripts (and other files) that where created while my day to day job work. I want to say thank you to my employer who allows me to share them with you (the community).
 
 
-# LEGAL NOTES
-## Disclaimer
+# Disclaimer
 All named product and company names are trademarks (™) or registered (®) trademarks of their respective holders. Use of them does not imply any affiliation with or endorsement by them.
 
-## License
-This Repository is licensed to you under the GNU LGPL v3 license.<br />
+# License
+This Repository is licensed to you under the MIT license.<br />
 See the [LICENSE](LICENSE.md) file in the project root for more information.
