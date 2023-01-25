@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<EmpirumPackage UUID="a74065c8-5ee4-43b9-926b-a597fa27aca5" Name="ResetLapsPassword 0.1" Type="OSPackage" Version="1.0">
-  <VersionInformation Version="0.1" Revision="0" />
+<EmpirumPackage UUID="59bc4151-61d9-4bbf-ad4f-7722e86a2cc0" Name="ResetLapsPassword 0.2" Type="OSPackage" Version="1.0">
+  <VersionInformation Version="0.2" Revision="0" />
   <TargetPath />
   <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
   <DatabaseSettings></DatabaseSettings>
@@ -10,8 +10,8 @@
         <CatalogueID i:nil="true" />
         <GenerallyReleased>0001-01-01T00:00:00</GenerallyReleased>
         <Icon i:nil="true" />
-        <Id>a74065c8-5ee4-43b9-926b-a597fa27aca5</Id>
-        <Name>ResetLapsPassword 0.1</Name>
+        <Id>59bc4151-61d9-4bbf-ad4f-7722e86a2cc0</Id>
+        <Name>ResetLapsPassword 0.2</Name>
         <PackageAssignments />
         <ProductKey i:nil="true" />
         <Revision>0</Revision>
@@ -111,7 +111,7 @@
           </SoftwareVarDefinition>
         </SoftwareVarDefinitions>
         <Vendor>htcfreek</Vendor>
-        <Version>0.1</Version>
+        <Version>0.2</Version>
         <VersionFile i:nil="true" />
         <AllowUnInstallation>false</AllowUnInstallation>
         <Author i:nil="true" />
@@ -122,7 +122,7 @@
         <CheckReg i:nil="true" />
         <CreationDate i:nil="true" />
         <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
-        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\0.1</Directory>
+        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\0.2</Directory>
         <Discontinue i:nil="true" />
         <DiskFreeApplication>0</DiskFreeApplication>
         <DiskFreeSystem>0</DiskFreeSystem>
@@ -141,7 +141,7 @@
         <MachineKeyName i:nil="true" />
         <Method i:nil="true" />
         <MinBandwidth i:nil="true" />
-        <PackageName>htcfreek\OsPackages\ResetLapsPassword\0.1</PackageName>
+        <PackageName>htcfreek\OsPackages\ResetLapsPassword\0.2</PackageName>
         <ParentID i:nil="true" />
         <Path i:nil="true" />
         <ProcessorSpeed>0</ProcessorSpeed>
@@ -210,6 +210,8 @@
         <TokenId i:nil="true" />
         <TokenTtl>0</TokenTtl>
       </Software>
+      <Software />
+      <Software />
       <Software />
       <Software />
       <Software />
