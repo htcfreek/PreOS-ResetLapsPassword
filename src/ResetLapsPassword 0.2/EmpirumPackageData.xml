@@ -2,7 +2,7 @@
 <EmpirumPackage UUID="59bc4151-61d9-4bbf-ad4f-7722e86a2cc0" Name="ResetLapsPassword 0.2" Type="OSPackage" Version="1.0">
   <VersionInformation Version="0.2" Revision="0" />
   <TargetPath />
-  <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
+  <Description>This package triggers the reset of the LAPS password for the client on which it is running.</Description>
   <DatabaseSettings></DatabaseSettings>
   <ObjectModelSerialisation>
     <ObjectModel Name="Matrix42.Empirum.PLF.Data.CoreDataAccess.Model">
@@ -22,7 +22,71 @@
             <AllowNull>0</AllowNull>
             <ComputerVarDefinition z:Id="i3">
               <AllowNull>1</AllowNull>
-              <Children />
+              <Children>
+                <ComputerVarDefinition z:Id="i4">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>0</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>Number of minutes to wait for the first Intune policy sync cycle. (Default value if not set: 10)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2023-01-25T17:16:53.8138215+01:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>IntuneSyncTimeout</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
+                <ComputerVarDefinition z:Id="i5">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>1</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>If set to 1 the package will fail if LAPS is not enabled/configured. (Default value: 0)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2023-01-25T17:17:13.2540018+01:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>LapsIsMandatory</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
+                <ComputerVarDefinition z:Id="i6">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>1</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>If set to 1 the password is reset immediately instead of changing the expiration time. (Default value: 0)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2023-01-25T17:17:32.680594+01:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>ResetImmediately</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
+              </Children>
               <Collection>0</Collection>
               <ComboType>9</ComboType>
               <DefaultValue i:nil="true" />
@@ -57,7 +121,7 @@
         <CheckFile i:nil="true" />
         <CheckReg i:nil="true" />
         <CreationDate i:nil="true" />
-        <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
+        <Description>This package triggers the reset of the LAPS password for the client on which it is running.</Description>
         <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\0.2</Directory>
         <Discontinue i:nil="true" />
         <DiskFreeApplication>0</DiskFreeApplication>
@@ -87,7 +151,7 @@
         <Sequence i:nil="true" />
         <SoftwareAUTFiles />
         <SoftwareConditions />
-        <SoftwareDepotRegister z:Id="i4">
+        <SoftwareDepotRegister z:Id="i7">
           <Check i:nil="true" />
           <CheckFile i:nil="true" />
           <Description i:nil="true" />
@@ -102,14 +166,14 @@
           <SEQUENCE i:nil="true" />
           <Softwares />
           <SupportedOSCapabilities>
-            <OSCapability z:Id="i5">
+            <OSCapability z:Id="i8">
               <ID>0</ID>
               <ItemOSCapabilitiesMappings />
               <Name>x86</Name>
               <OSDatas />
               <UseInSyncJobs>0</UseInSyncJobs>
             </OSCapability>
-            <OSCapability z:Id="i6">
+            <OSCapability z:Id="i9">
               <ID>0</ID>
               <ItemOSCapabilitiesMappings />
               <Name>x64</Name>
@@ -118,7 +182,7 @@
             </OSCapability>
           </SupportedOSCapabilities>
           <SupportedOSs>
-            <OSData z:Id="i7">
+            <OSData z:Id="i10">
               <BaseName>Windows PE</BaseName>
               <BitFlag>8</BitFlag>
               <ID>0</ID>
@@ -136,16 +200,17 @@
         <SoftwareDomainGroups />
         <SubType>WinPE</SubType>
         <SupportedOSCapabilities>
-          <OSCapability z:Ref="i5" />
-          <OSCapability z:Ref="i6" />
+          <OSCapability z:Ref="i8" />
+          <OSCapability z:Ref="i9" />
         </SupportedOSCapabilities>
         <SupportedOSs>
-          <OSData z:Ref="i7" />
+          <OSData z:Ref="i10" />
         </SupportedOSs>
         <Tested i:nil="true" />
         <TokenId i:nil="true" />
         <TokenTtl>0</TokenTtl>
       </Software>
+      <Software />
       <Software />
       <Software />
       <Software />
