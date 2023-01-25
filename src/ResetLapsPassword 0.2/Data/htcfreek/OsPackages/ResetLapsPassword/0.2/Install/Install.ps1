@@ -132,7 +132,7 @@ function ReadEmpirumVariable ([string] $varName, [Switch] $isPwd, [Switch] $retu
     }
     elseif (-Not [string]::IsNullOrWhiteSpace($defaultValue))
     {
-        WriteLogDebug -Message "Warning: Variable '$($varName)' is not set! The default value is used: $($defaultValue)"
+        WriteLogDebug -Message "WARNING: Variable '$($varName)' is not set! The default value is used: $($defaultValue)"
         if ($isBoolean) {
             return $defaultValue -eq "1"
         }
@@ -142,7 +142,7 @@ function ReadEmpirumVariable ([string] $varName, [Switch] $isPwd, [Switch] $retu
     }
     else
     {
-        ExitWithCodeMessage -errorCode 550 -errorMessage "Error: The variable '$($varName)' is not set. Abort execution and exit script."
+        ExitWithCodeMessage -errorCode 550 -errorMessage "ERROR: The variable '$($varName)' is not set. Abort execution and exit script."
     }
 }
 
@@ -614,18 +614,17 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
 
 
 function Main() {
-
     WriteLogDebug "Starting ResetLapsPassword package.";
 
     # Check if running on Windows
     If (IsWinPeEnvironment) {
-        $message = "Error: ResetLapsPassword package is running under WinPE. The execution is stopped."
+        $message = "ERROR: ResetLapsPassword package is running under WinPE. The execution is stopped."
         ExitWithCodeMessage -errorCode 501 -errorMessage $message;
     }
 
     # OS version check
     if ([System.Environment]::OSVersion.Version.Build -lt 19041) {
-        $message = "Error: Windows 10 (Build 19041 or higher) or Windows 11 is required! The execution is stopped."
+        $message = "ERROR: Windows 10 (Build 19041 or higher) or Windows 11 is required! The execution is stopped."
         ExitWithCodeMessage -errorCode 502 -errorMessage $message;
     }
     else {
@@ -635,7 +634,7 @@ function Main() {
 
     # Check user context
     if (-Not [System.Security.Principal.WindowsIdentity]::GetCurrent().IsSystem) {
-        ExitWithCodeMessage -errorCode 503 -errorMessage "Error: Script must run as 'Local System'!"
+        ExitWithCodeMessage -errorCode 503 -errorMessage "ERROR: Script must run as 'Local System'!"
     }
 
     # Read package variables
@@ -656,7 +655,7 @@ function Main() {
     # Detect reset tasks
     $lapsResetTasks = Get-LapsResetTasks -LapsIsMandatory $varLapsIsMandatory
 
-    # Import legacy Microsoft LAPS module
+    # Import module for legacy Microsoft LAPS
     if ($lapsResetTasks.LegacyLaps -or $lapsResetTasks.WinLapsInEmulationMode)
     {
          try {
@@ -666,11 +665,11 @@ function Main() {
             Import-Module "$lapsLegacyModulePath" -ErrorAction Stop
             WriteLogInfo -message "Module imported successfully."
         } catch {
-            ExitWithCodeMessage -errorCode 509 -errorMessage "Error: Failed to import PowerShell module for legacy Microsoft LAPS (AdmPwd.PS.psd1)! - $($_.Exception.Message)"
+            ExitWithCodeMessage -errorCode 509 -errorMessage "ERROR: Failed to import PowerShell module for legacy Microsoft LAPS (AdmPwd.PS.psd1)! - $($_.Exception.Message)"
         }
     }
 
-    # Invoke-LapsPkgResetTasks
+    # Invoke LAPS reset tasks
     Invoke-LapsResetCommands -LapsResetTasks $lapsResetTasks -DoResetImmediately $varLapsResetImmediately
 
     WriteLogDebug "Finished ResetLapsPassword package.";
