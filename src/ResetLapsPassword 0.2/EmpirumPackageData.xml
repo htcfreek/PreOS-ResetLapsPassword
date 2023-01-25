@@ -22,71 +22,7 @@
             <AllowNull>0</AllowNull>
             <ComputerVarDefinition z:Id="i3">
               <AllowNull>1</AllowNull>
-              <Children>
-                <ComputerVarDefinition z:Id="i4">
-                  <AllowNull>1</AllowNull>
-                  <Children />
-                  <Collection>0</Collection>
-                  <ComboType>1</ComboType>
-                  <DefaultValue i:nil="true" />
-                  <Description>Reset the password immediately instead of changing the expiration time. (Only supported with Windows LAPS on Win11 IP Build 25145 and later.)</Description>
-                  <Id>0</Id>
-                  <LastUpdate>2022-11-11T11:59:14.4988379+01:00</LastUpdate>
-                  <LowerValue i:nil="true" />
-                  <Name>WindowsLapsResetImmediately</Name>
-                  <Objecttype i:nil="true" />
-                  <Parent i:nil="true" />
-                  <ParentId i:nil="true" />
-                  <PredefinedVariableValues />
-                  <Sequence i:nil="true" />
-                  <ShowFlag>0</ShowFlag>
-                  <SoftwareVarDefinitions />
-                  <Type>0</Type>
-                  <UpperValue i:nil="true" />
-                </ComputerVarDefinition>
-                <ComputerVarDefinition z:Id="i5">
-                  <AllowNull>1</AllowNull>
-                  <Children />
-                  <Collection>0</Collection>
-                  <ComboType>1</ComboType>
-                  <DefaultValue i:nil="true" />
-                  <Description>Use the DomainJoin package user credentials instead of the computer account context. (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.)</Description>
-                  <Id>0</Id>
-                  <LastUpdate>2022-11-11T12:02:51.6365081+01:00</LastUpdate>
-                  <LowerValue i:nil="true" />
-                  <Name>WindowsLapsUseDJCredentials</Name>
-                  <Objecttype i:nil="true" />
-                  <Parent i:nil="true" />
-                  <ParentId i:nil="true" />
-                  <PredefinedVariableValues />
-                  <Sequence i:nil="true" />
-                  <ShowFlag>0</ShowFlag>
-                  <SoftwareVarDefinitions />
-                  <Type>0</Type>
-                  <UpperValue i:nil="true" />
-                </ComputerVarDefinition>
-                <ComputerVarDefinition z:Id="i6">
-                  <AllowNull>1</AllowNull>
-                  <Children />
-                  <Collection>0</Collection>
-                  <ComboType>1</ComboType>
-                  <DefaultValue i:nil="true" />
-                  <Description>Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. (On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default.)</Description>
-                  <Id>0</Id>
-                  <LastUpdate>2022-11-11T12:36:39.3978234+01:00</LastUpdate>
-                  <LowerValue i:nil="true" />
-                  <Name>ForceLegacyLapsModuleUsage</Name>
-                  <Objecttype i:nil="true" />
-                  <Parent i:nil="true" />
-                  <ParentId i:nil="true" />
-                  <PredefinedVariableValues />
-                  <Sequence i:nil="true" />
-                  <ShowFlag>0</ShowFlag>
-                  <SoftwareVarDefinitions />
-                  <Type>0</Type>
-                  <UpperValue i:nil="true" />
-                </ComputerVarDefinition>
-              </Children>
+              <Children />
               <Collection>0</Collection>
               <ComboType>9</ComboType>
               <DefaultValue i:nil="true" />
@@ -151,7 +87,7 @@
         <Sequence i:nil="true" />
         <SoftwareAUTFiles />
         <SoftwareConditions />
-        <SoftwareDepotRegister z:Id="i7">
+        <SoftwareDepotRegister z:Id="i4">
           <Check i:nil="true" />
           <CheckFile i:nil="true" />
           <Description i:nil="true" />
@@ -166,14 +102,14 @@
           <SEQUENCE i:nil="true" />
           <Softwares />
           <SupportedOSCapabilities>
-            <OSCapability z:Id="i8">
+            <OSCapability z:Id="i5">
               <ID>0</ID>
               <ItemOSCapabilitiesMappings />
               <Name>x86</Name>
               <OSDatas />
               <UseInSyncJobs>0</UseInSyncJobs>
             </OSCapability>
-            <OSCapability z:Id="i9">
+            <OSCapability z:Id="i6">
               <ID>0</ID>
               <ItemOSCapabilitiesMappings />
               <Name>x64</Name>
@@ -182,7 +118,7 @@
             </OSCapability>
           </SupportedOSCapabilities>
           <SupportedOSs>
-            <OSData z:Id="i10">
+            <OSData z:Id="i7">
               <BaseName>Windows PE</BaseName>
               <BitFlag>8</BitFlag>
               <ID>0</ID>
@@ -200,16 +136,17 @@
         <SoftwareDomainGroups />
         <SubType>WinPE</SubType>
         <SupportedOSCapabilities>
-          <OSCapability z:Ref="i8" />
-          <OSCapability z:Ref="i9" />
+          <OSCapability z:Ref="i5" />
+          <OSCapability z:Ref="i6" />
         </SupportedOSCapabilities>
         <SupportedOSs>
-          <OSData z:Ref="i10" />
+          <OSData z:Ref="i7" />
         </SupportedOSs>
         <Tested i:nil="true" />
         <TokenId i:nil="true" />
         <TokenTtl>0</TokenTtl>
       </Software>
+      <Software />
       <Software />
       <Software />
       <Software />
