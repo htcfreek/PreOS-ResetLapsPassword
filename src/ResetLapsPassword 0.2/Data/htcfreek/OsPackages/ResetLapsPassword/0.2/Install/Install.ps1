@@ -40,7 +40,6 @@ Exit-Codes:
     511 : Windows LAPS password reset failed.
     512 : Legacy Microsoft LAPS password reset failed.
 
-
 Changes (Date / Version / Author / Change):
 2022-11-11 / 0.1 / htcfreek / Initial pre-release version of the package.
 2023-01-25 / 0.2 / htcfreek / Complete rewrite of the package with changed variables and behavior.
@@ -67,14 +66,14 @@ function IsWinPeEnvironment
 {
     # Function: IsWinPeEnvironment
     # Returns: "True" if WinPE and "False" if not.
-	try
-	{
+    try
+    {
         return (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Control\MiniNT")
-	}
-	catch
-	{
-		return $false
-	}
+    }
+    catch
+    {
+        return $false
+    }
 }
 
 function WriteLogInfo([string] $Message)
@@ -90,7 +89,7 @@ function WriteLogDebug([string] $Message)
 
 function ExitWithCodeMessage($errorCode, $errorMessage)
 {
-    If ($errorCode -eq 0) 
+    If ($errorCode -eq 0)
     {
         WriteLogInfo -Message $errorMessage;
     }
@@ -119,7 +118,7 @@ function ReadEmpirumVariable ([string] $varName, [Switch] $isPwd, [Switch] $retu
     $logContent = if ($isPwd -and ($isVarContentEmpty -eq $false)) {"*****"} Else {$varContent}
     WriteLogDebug -Message "Variable '$($varName)': $($logContent)"
 
-    if (-Not $isVarContentEmpty) 
+    if (-Not $isVarContentEmpty)
     {
         if ($isPwd -and $returnSecureString) {
             return ConvertTo-SecureString -String $varContent -AsPlainText -Force
@@ -155,7 +154,7 @@ function Confirm-RegValueIsDefined([string]$RegPath, [string]$RegValueName)
     #	- [string]$RegPath : Path to Registry key.
     #	- [string]$RegValueName : Name of Registry value.
     # Returns a boolean value.
-    
+
     if (Test-Path -Path $RegPath -ErrorAction SilentlyContinue)
     {
         $regPathItem = Get-ItemProperty -Path $RegPath
@@ -186,15 +185,15 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
 {
     # Function: Update-ClientMgmtConfiguration
     # The function checks which management systems are used and updates the management policies.
-    # Input parameter: 
+    # Input parameter:
     #    - [int]$IntuneSyncTimeout : Minutes to wait for the initial sync of Intune/MDM policies.
     # Return value: <$true> = Joined to Azure or local AD; <$false> = Not joined to an AD.
-    
+
     # Convert timeout to seconds.
     $IntuneSyncTimeout *= 60
 
-	# Debug/Log information
-	WriteLogDebug "Updating client management information ..."
+    # Debug/Log information
+    WriteLogDebug "Updating client management information ..."
 
     # First check if there is a local Domain Join pending: The key "...\Services\NetlogonJoinDomain" or "...\Services\Netlogon\AvoidSpnSet" does exist.
     # - See also: https://www.powershellgallery.com/packages/PendingReboot/0.9.0.6/Content/pendingreboot.psm1
@@ -225,12 +224,12 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
         if ([string]::IsNullOrEmpty($regEnrolmentID)) {throw}
         if (-Not (Test-Path "HKLM:\SOFTWARE\Microsoft\Provisioning\OMADM\Accounts\$($regEnrolmentID)")) {throw}
         if (-Not (Test-Path -Path "C:\ProgramData\Microsoft\DMClient\$($regEnrolmentID)")) {throw}
-        
+
         # If we can find the guid and both paths, the device is enrolled.
         [bool]$isIntuneMDM = $true
     }
     catch
-    { 
+    {
         [bool]$isIntuneMDM = $false
     }
 
@@ -268,7 +267,7 @@ function Get-LegacyLapsState()
         UserName = ""
         UserDoesExist=$true
     }
-    
+
     # Is CSE installed?
     $regKey = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon\GPExtensions\{D76B9641-3288-4f75-942D-087DE603E3EA}"
     if (Confirm-RegValueIsDefined -RegPath $regKey -RegValueName "DllName")
@@ -288,7 +287,7 @@ function Get-LegacyLapsState()
         if ($regValue -eq 1) {
             $resultData.Enabled = $true
         }
-        
+
         # Get managed user (name) => Empty if default user or not configured.
         if (Confirm-RegValueIsDefined -RegPath $regKey -RegValueName "AdminAccountName")
         {
@@ -516,8 +515,8 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     }
 
     # Return result
-	# - "Windows LAPS" and "legacy Microsoft LAPS" can run side by side, as long as they manage different accounts. (The check for different accounts happens a few lines before.)
-	# - "Windows LAPS" can run in "Legacy Emulation Mode" if the legacy "Microsoft LAPS" CSE is not installed.
+    # - "Windows LAPS" and "legacy Microsoft LAPS" can run side by side, as long as they manage different accounts. (The check for different accounts happens a few lines before.)
+    # - "Windows LAPS" can run in "Legacy Emulation Mode" if the legacy "Microsoft LAPS" CSE is not installed.
     # - The LAPS user account can only exist, if the corresponding LAPS is enabled/configured.
     $resetOperations.LegacyLaps = ($legacyLapsProperties.Enabled -and $legacyLapsProperties.Installed)
     $resetOperations.WinLaps = ($winLapsProperties.Enabled -and $winLapsProperties.Installed -and !$winLapsProperties.LegacyEmulation)
@@ -536,9 +535,9 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
     # Input parameter:
     #    - [PSCustomObject]$LapsResetTasks : Custom object generated by the function "Get-LapsResetTasks" containing the required reset information.
     #    - [bool]$DoResetImmediately : $true = Reset immediately.; $false = Only set expiration time.
-    
+
     # Debug/Log information
-	WriteLogDebug "Starting reset sequence ..."
+    WriteLogDebug "Starting reset sequence ..."
     WriteLogDebug "Final reset task summary: $($LapsResetTasks -replace ';',',' -replace '@{','' -replace '}',',') DoResetImmediately=$($DoResetImmediately)"
     if ($DoResetImmediately) { WriteLogInfo "Immediate reset is enabled." } Else { WriteLogInfo "Immediate reset is disabled. - Only expiration time will be set." }
     WriteLogInfo "Executing user account: $env:Username"
@@ -547,13 +546,13 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
     if ($LapsResetTasks.WinLaps)
     {
         WriteLogInfo "Resetting password for Windows LAPS user ..."
-        
+
         try
         {
             if ($LapsResetTasks.WinLapsIsAzureTarget -or $DoResetImmediately)
             {
                 # According to https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-scenarios-azure-active-directory#rotate-the-password expiration time change is not supported for Azure AD.
-				if (-Not $DoResetImmediately)
+                if (-Not $DoResetImmediately)
                 {
                     WriteLogInfo "WARNING: Setting expiration time is not supported for Azure AD environments! - Switching to immediate reset."
                 }
@@ -563,8 +562,8 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
                 {
                     ExitWithCodeMessage -errorCode 510 -errorMessage "ERROR: Failed to reset password for Windows LAPS user! - The user does not exist."
                 }
-                
-				# We don't need special credentials here because the system account is allowed to reset the password.
+
+                # We don't need special credentials here because the system account is allowed to reset the password.
                 Reset-LapsPassword
             }
             Else
@@ -578,15 +577,14 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
         {
             ExitWithCodeMessage -errorCode 511 -errorMessage "ERROR: Failed to reset password for Windows LAPS user! - $($_)"
         }
-
     }
-    
+
     # The Legacy LAPS password can be reset, if Windows LAPS runs in Legacy Emulation Mode or if legacy Microsoft LAPS is available.
     if ($LapsResetTasks.WinLapsInEmulationMode -or $LapsResetTasks.LegacyLaps)
     {
         WriteLogInfo "Resetting password for legacy Microsoft LAPS user ..."
         if ($LapsResetTasks.WinLapsInEmulationMode) { WriteLogInfo "Windows LAPS is running in legacy Microsoft LAPS emulation mode. - Using the Microsoft LAPS module." }
-        
+
         try
         {
             # We don't need special credentials here because the system account is allowed to reset the password.
@@ -607,7 +605,6 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
         {
             ExitWithCodeMessage -errorCode 512 -errorMessage "ERROR: Failed to reset password for Microsoft LAPS user! - $($_)"
         }
-
     }
 
     # Sending log info
@@ -618,8 +615,8 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
 
 function Main() {
 
-    WriteLogDebug "Starting ResetLapsPassword package.";	
-    
+    WriteLogDebug "Starting ResetLapsPassword package.";
+
     # Check if running on Windows
     If (IsWinPeEnvironment) {
         $message = "Error: ResetLapsPassword package is running under WinPE. The execution is stopped."
@@ -635,12 +632,12 @@ function Main() {
         [string] $osInfo = (Get-WmiObject -class Win32_OperatingSystem).Caption + " " + (Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name "DisplayVersion") + " (Build $([System.Environment]::OSVersion.Version.Build))"
         WriteLogInfo -Message "Operating System: $($osInfo)"
     }
-    
+
     # Check user context
     if (-Not [System.Security.Principal.WindowsIdentity]::GetCurrent().IsSystem) {
         ExitWithCodeMessage -errorCode 503 -errorMessage "Error: Script must run as 'Local System'!"
     }
-    
+
     # Read package variables
     [int]$varIntuneSyncTimeout = ReadEmpirumVariable -varName ResetLapsPassword.IntuneSyncTimeout -defaultValue 10
     [bool]$varLapsIsMandatory = ReadEmpirumVariable -varName ResetLapsPassword.LapsIsMandatory -isBoolean -defaultValue 0
@@ -651,7 +648,7 @@ function Main() {
     If (($isDeviceADJoined -eq $false) -and ($varLapsIsMandatory -eq $false))
     {
         # LAPS only works on AD (Azure or local) joined systems, so we skip execution here.
-		# We don't skip if LAPS is mandatory to fail later in the script.
+        # We don't skip if LAPS is mandatory to fail later in the script.
         $message = "Device is not joined to Azure AD or a locale AD. - Further execution is skipped."
         ExitWithCodeMessage -errorCode 0 -errorMessage $message;
     }
