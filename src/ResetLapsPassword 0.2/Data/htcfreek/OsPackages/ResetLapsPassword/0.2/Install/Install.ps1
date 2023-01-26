@@ -1,6 +1,6 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 0.2
+Version: 0.2-prerelease
 Developer: htcfreek (Heiko Horwedel)
 Created at: 25.01.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
@@ -568,6 +568,7 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
             }
             Else
             {
+                # We don't need special credentials here because the system account is allowed to reset the password.
                 Set-LapsADPasswordExpirationTime -ComputerName $env:computername
             }
 
@@ -592,6 +593,7 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
 
             if ($DoResetImmediately -and $LapsResetTasks.LegacyLapsUserExists)
             {
+                # We don't need special credentials here because the system account is allowed to reset the password.
                 & gpupdate.exe /target:computer /force
             }
             elseif ($DoResetImmediately -and $LapsResetTasks.LegacyLapsUserExists -eq $false)
