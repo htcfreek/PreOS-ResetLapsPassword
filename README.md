@@ -26,7 +26,7 @@ _¹) Not supported in Windows LAPS with Azure AD as backup target, because of ho
 
 ## Download and Usage
 
-1. Download the archive from [here](http://github.com/htcfreek/PreOS-ResetLapsPassword/releases/latest).
+1. Download the archive from [here](http://github.com/htcfreek/PreOS-ResetLapsPassword/releases).
 2. Please extract the downloaded archive to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package to your Software Depot (Matrix42 Management Console > Configuration > Depot).
 3. Move the package within the depot register "Matrix42 PreOS Packages" after the "DomainJoin" package and activate it for deployment ("Ready to install").
 4. Then you can assign the package and set the package variables if you want to change the default behavior.
