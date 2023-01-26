@@ -14,7 +14,7 @@ The package has the Legacy LAPS PowerShell module from the Microsoft LAPS instal
 ## Features
 
 - Supports Windows LAPS with Azure AD and local AD.
-- Supports legacy Microsoft LAPS with local AD and [legacy emulation mode of Windows LAPS](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-legacy).
+- Supports legacy Microsoft LAPS with local AD and the [legacy emulation mode of Windows LAPS](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-legacy).
 - Supports coexistence of legacy Microsoft LAPS and Windows LAPS as long as they manage different accounts. ([More information.](https://github.com/MicrosoftDocs/windowsserverdocs/issues/6961#issuecomment-1382908222))
 - Support for setting the expiration time¹ and for resetting the password immediately.
 - Automatic detection of the client's LAPS configuration based on GPOs, CSP policies and Registry values.
@@ -26,7 +26,7 @@ _¹) Not supported in Windows LAPS with Azure AD as backup target, because of ho
 
 ## Download and Usage
 
-1. Download the archive from [here](http://github.com/htcfreek/PreOS-ResetLapsPassword/release/latest).
+1. Download the archive from [here](http://github.com/htcfreek/PreOS-ResetLapsPassword/releases/latest).
 2. Please extract the downloaded archive to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package to your Software Depot (Matrix42 Management Console > Configuration > Depot).
 3. Move the package within the depot register "Matrix42 PreOS Packages" after the "DomainJoin" package and activate it for deployment ("Ready to install").
 4. Then you can assign the package and set the package variables if you want to change the default behavior.
