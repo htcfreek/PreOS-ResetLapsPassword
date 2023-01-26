@@ -15,7 +15,7 @@ A PreOS-Package for Matrix42 Empirum to reset the LAPS password of a computer on
 The package works with Windows 10 (Build 19041 and higher) and Windows 11. Legacy Microsoft LAPS (only Windows 10) and Widows LAPS are supported.
 An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
 
-The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: <https://www.microsoft.com/en-us/download/details.aspx?id=46899>)
+The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: https://www.microsoft.com/en-us/download/details.aspx?id=46899)
 
 FEATURES
 - Supports Windows LAPS with Azure AD and local AD.
@@ -32,10 +32,10 @@ FEATURES
 
 DOWNLOAD AND USAGE
 ------------------
-1. Download the archive form http://github.com/htcfreek/PreOS-ResetLapsPassword/releases/latest.
+1. Download the archive form http://github.com/htcfreek/PreOS-ResetLapsPassword/releases.
 2. Please extract the downloaded archive to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package into your Software Depot (Matrix42 Management Console > Configuration > Depot).
 3. Move the package in the depot register "Matrix42 PreOS Packages" after the DomainJoin package and activate it for deployment ("Ready to install").
-4. Then you can assign the package and set the package variables if you want to change the default behaviour.
+4. Then you can assign the package and set the package variables if you want to change the default behavior.
 
 PACKAGE VARIABLES
 - IntuneSyncTimeout : 10 (default) or custom value.
