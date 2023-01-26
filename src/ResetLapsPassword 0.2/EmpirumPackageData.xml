@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<EmpirumPackage UUID="a74065c8-5ee4-43b9-926b-a597fa27aca5" Name="ResetLapsPassword 0.1" Type="OSPackage" Version="1.0">
-  <VersionInformation Version="0.1" Revision="0" />
+<EmpirumPackage UUID="59bc4151-61d9-4bbf-ad4f-7722e86a2cc0" Name="ResetLapsPassword 0.2" Type="OSPackage" Version="1.0">
+  <VersionInformation Version="0.2" Revision="0" />
   <TargetPath />
-  <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
+  <Description>This package triggers the reset of the LAPS password for the client on which it is running.</Description>
   <DatabaseSettings></DatabaseSettings>
   <ObjectModelSerialisation>
     <ObjectModel Name="Matrix42.Empirum.PLF.Data.CoreDataAccess.Model">
@@ -10,8 +10,8 @@
         <CatalogueID i:nil="true" />
         <GenerallyReleased>0001-01-01T00:00:00</GenerallyReleased>
         <Icon i:nil="true" />
-        <Id>a74065c8-5ee4-43b9-926b-a597fa27aca5</Id>
-        <Name>ResetLapsPassword 0.1</Name>
+        <Id>59bc4151-61d9-4bbf-ad4f-7722e86a2cc0</Id>
+        <Name>ResetLapsPassword 0.2</Name>
         <PackageAssignments />
         <ProductKey i:nil="true" />
         <Revision>0</Revision>
@@ -27,13 +27,13 @@
                   <AllowNull>1</AllowNull>
                   <Children />
                   <Collection>0</Collection>
-                  <ComboType>1</ComboType>
+                  <ComboType>0</ComboType>
                   <DefaultValue i:nil="true" />
-                  <Description>Reset the password immediately instead of changing the expiration time. (Only supported with Windows LAPS on Win11 IP Build 25145 and later.)</Description>
+                  <Description>Number of minutes to wait for the first Intune policy sync cycle. (Default value if not set: 10)</Description>
                   <Id>0</Id>
-                  <LastUpdate>2022-11-11T11:59:14.4988379+01:00</LastUpdate>
+                  <LastUpdate>2023-01-25T17:16:53.8138215+01:00</LastUpdate>
                   <LowerValue i:nil="true" />
-                  <Name>WindowsLapsResetImmediately</Name>
+                  <Name>IntuneSyncTimeout</Name>
                   <Objecttype i:nil="true" />
                   <Parent i:nil="true" />
                   <ParentId i:nil="true" />
@@ -50,11 +50,11 @@
                   <Collection>0</Collection>
                   <ComboType>1</ComboType>
                   <DefaultValue i:nil="true" />
-                  <Description>Use the DomainJoin package user credentials instead of the computer account context. (Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmidiately" has to be set to 0.)</Description>
+                  <Description>If set to 1 the package will fail if LAPS is not enabled/configured. (Default value: 0)</Description>
                   <Id>0</Id>
-                  <LastUpdate>2022-11-11T12:02:51.6365081+01:00</LastUpdate>
+                  <LastUpdate>2023-01-25T17:17:13.2540018+01:00</LastUpdate>
                   <LowerValue i:nil="true" />
-                  <Name>WindowsLapsUseDJCredentials</Name>
+                  <Name>LapsIsMandatory</Name>
                   <Objecttype i:nil="true" />
                   <Parent i:nil="true" />
                   <ParentId i:nil="true" />
@@ -71,11 +71,11 @@
                   <Collection>0</Collection>
                   <ComboType>1</ComboType>
                   <DefaultValue i:nil="true" />
-                  <Description>Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package. (On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default.)</Description>
+                  <Description>If set to 1 the password is reset immediately instead of changing the expiration time. (Default value: 0)</Description>
                   <Id>0</Id>
-                  <LastUpdate>2022-11-11T12:36:39.3978234+01:00</LastUpdate>
+                  <LastUpdate>2023-01-25T17:17:32.680594+01:00</LastUpdate>
                   <LowerValue i:nil="true" />
-                  <Name>ForceLegacyLapsModuleUsage</Name>
+                  <Name>ResetImmediately</Name>
                   <Objecttype i:nil="true" />
                   <Parent i:nil="true" />
                   <ParentId i:nil="true" />
@@ -111,7 +111,7 @@
           </SoftwareVarDefinition>
         </SoftwareVarDefinitions>
         <Vendor>htcfreek</Vendor>
-        <Version>0.1</Version>
+        <Version>0.2</Version>
         <VersionFile i:nil="true" />
         <AllowUnInstallation>false</AllowUnInstallation>
         <Author i:nil="true" />
@@ -121,8 +121,8 @@
         <CheckFile i:nil="true" />
         <CheckReg i:nil="true" />
         <CreationDate i:nil="true" />
-        <Description>This package triggers the reset of the LPAS password by setting the expiration time to now for the client on which it is running.</Description>
-        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\0.1</Directory>
+        <Description>This package triggers the reset of the LAPS password for the client on which it is running.</Description>
+        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\0.2</Directory>
         <Discontinue i:nil="true" />
         <DiskFreeApplication>0</DiskFreeApplication>
         <DiskFreeSystem>0</DiskFreeSystem>
@@ -141,7 +141,7 @@
         <MachineKeyName i:nil="true" />
         <Method i:nil="true" />
         <MinBandwidth i:nil="true" />
-        <PackageName>htcfreek\OsPackages\ResetLapsPassword\0.1</PackageName>
+        <PackageName>htcfreek\OsPackages\ResetLapsPassword\0.2</PackageName>
         <ParentID i:nil="true" />
         <Path i:nil="true" />
         <ProcessorSpeed>0</ProcessorSpeed>
@@ -210,6 +210,10 @@
         <TokenId i:nil="true" />
         <TokenTtl>0</TokenTtl>
       </Software>
+      <Software />
+      <Software />
+      <Software />
+      <Software />
       <Software />
       <Software />
       <Software />
