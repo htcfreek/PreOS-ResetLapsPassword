@@ -1,42 +1,45 @@
 # ResetLapsPassword
 
 <!-- Name des Repositories muss immer klein geschrieben werden. -->
-<a href="https://github.com/htcfreek/preos-resetlapspassword/releases/latest"><img src="https://img.shields.io/github/release/htcfreek/preos-resetlapspassword?label=stable+release"/></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/releases/latest"><img src="https://img.shields.io/github/release/htcfreek/preos-resetlapspassword?include_prereleases&label=latest+release"/></a> <a href="LICENSE.md"><img src="https://img.shields.io/github/license/htcfreek/preos-resetlapspassword" /></a>
+<a href="https://github.com/htcfreek/preos-resetlapspassword/releases"><img src="https://img.shields.io/github/release/htcfreek/preos-resetlapspassword?label=stable+release"/></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/releases/latest"><img src="https://img.shields.io/github/release/htcfreek/preos-resetlapspassword?include_prereleases&label=latest+release"/></a> <a href="LICENSE.md"><img src="https://img.shields.io/github/license/htcfreek/preos-resetlapspassword" /></a>
 
-<a href="https://github.com/htcfreek/preos-resetlapspassword/releases/latest"><img src="https://img.shields.io/github/downloads/htcfreek/preos-resetlapspassword/total?label=Downloads"/></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/stargazers"><img src="https://img.shields.io/github/stars/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/watchers"><img src="https://img.shields.io/github/watchers/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/network/members"><img src="https://img.shields.io/github/forks/htcfreek/preos-resetlapspassword" /></a>
+<a href="https://github.com/htcfreek/preos-resetlapspassword/releases"><img src="https://img.shields.io/github/downloads/htcfreek/preos-resetlapspassword/total?label=Downloads"/></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/stargazers"><img src="https://img.shields.io/github/stars/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/watchers"><img src="https://img.shields.io/github/watchers/htcfreek/preos-resetlapspassword" /></a> <a href="https://github.com/htcfreek/preos-resetlapspassword/network/members"><img src="https://img.shields.io/github/forks/htcfreek/preos-resetlapspassword" /></a>
 
-A PreOS-Package for Matrix42 Empirum that can reset the LAPS password of a computer on reinstall.
+A PreOS-Package for Matrix42 Empirum to reset the LAPS password of a computer on reinstall.
 
-You can use the package with Windows 10 Build 19041+ (Legacy LAPS) and Windows 11 (Windows LAPS & Legacy LAPS).
-The package requires an up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1!
+The package works with Windows 10 (Build 19041 and higher) and Windows 11. Legacy Microsoft LAPS (only Windows 10) and Widows LAPS are supported. An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
 
 The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: <https://www.microsoft.com/en-us/download/details.aspx?id=46899>)
 
 ## Features
 
-- Support for both LAPS versions (Legacy & Windows).
-- Immediate password reset with Windows LAPS.
-- Supports AzureAD for resetting the password immediately.
+- Supports Windows LAPS with Azure AD and local AD.
+- Supports legacy Microsoft LAPS with local AD and [legacy emulation mode of Windows LAPS](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-legacy).
+- Supports coexistence of legacy Microsoft LAPS and Windows LAPS as long as they manage different accounts. ([More information.](https://github.com/MicrosoftDocs/windowsserverdocs/issues/6961#issuecomment-1382908222))
+- Support for setting the expiration time¹ and for resetting the password immediately.
+- Automatic detection of the client's LAPS configuration based on GPOs, CSP policies and Registry values.
 - Using the computer account credentials for password reset.
-- Using the domain join credentials when setting only the expiration date under Windows LAPS.
-- Forcing the usage of Legacy LAPS if Windows LAPS is available too.
-- Skipping package execution if the Computer object in Empirum is not configured for Domain join.
+- Skipping package execution if the computer is not joined to Azure AD or a local domain.
+- LAPS can be defined as mandatory using a package variable. (See [package variables](#package-variables) for more details.)
+
+_¹) Not supported in Windows LAPS with Azure AD as backup target, because of how LAPS works in this case. ([More information.](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-azure-active-directory#rotate-the-password))_
 
 ## Download and Usage
 
-1. Download the archive form [here](http://github.com/htcfreek/preos-resetlapspassword/release/latest).
-2. Please extract the downloaded archive to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package in your Software Depot (Matrix42 Management Console > Configuration > Depot).
+1. Download the archive from [here](http://github.com/htcfreek/PreOS-ResetLapsPassword/release/latest).
+2. Please extract the downloaded archive to `%EmpirumServer%\Configurator$\PackageStore\PreOSPackages` and import the package to your Software Depot (Matrix42 Management Console > Configuration > Depot).
 3. Move the package within the depot register "Matrix42 PreOS Packages" after the "DomainJoin" package and activate it for deployment ("Ready to install").
 4. Then you can assign the package and set the package variables if you want to change the default behavior.
 
 ### Package variables
 
-- **WindowsLapsResetImmediately : 0 (default) or 1**
-   <br />Reset the password immediately instead of changing the expiration time.<br />(Only supported with Windows LAPS on Win11 IP Build 25145 and later.)
-- **WindowsLapsUseDJCredentials : 0 (default) or 1**
-   <br />Use the DomainJoin package user credentials instead of the computer account context.<br />(Only supported with Windows LAPS on Win11 IP Build 25145 and later. "WindowsLapsResetImmediately" has to be set to 0.)
-- **ForceLegacyLapsModuleUsage : 0 (default) or 1**
-   <br />Enforce the usage of the Legacy LAPS (Adm.Pwd) module included in this PreOS package.<br />(On Windows 11 IP Build 25145 and later the built-in Windows LAPS module will be used by default.)
+- **IntuneSyncTimeout : 10 (default) or custom value.**
+    <br />Number of minutes to wait for the first Intune policy sync cycle.
+- **LapsIsMandatory : 0 (default) or 1**
+    <br />If set to 1 the package will fail if LAPS is not enabled/configured.
+- **ResetImmediately : 0 (default) or 1**
+    <br />If set to 1 the password is reset immediately instead of changing the expiration time.
+    <br />(Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
 
 ## Support
 
