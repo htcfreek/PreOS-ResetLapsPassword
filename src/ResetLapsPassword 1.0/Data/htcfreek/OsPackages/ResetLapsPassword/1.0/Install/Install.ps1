@@ -1,6 +1,6 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 0.2-prerelease
+Version: 1.0
 Developer: htcfreek (Heiko Horwedel)
 Created at: 25.01.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
