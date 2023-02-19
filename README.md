@@ -45,11 +45,11 @@ _¹) Not supported in Windows LAPS with Azure AD as backup target, because of ho
 
 ### LAPS configuration requirements
 
-Mode | Supported OS | Install requirements | Configuration requirements | ⚠ Notes ⚠
+Mode | Supported OS | Install requirements | Configuration requirements | ⚠ Important ⚠
 ------------ | ------------- | ------------- | ------------- | -------------
 Legacy Microsoft LAPS | Up to the newest Windows version. | MS LAPS (AdmPwd) CSE | MS LAPS (AdmPwd) policies |
 Windows LAPS | Windows 11 IP | built-in feature | Windows LAPS GPO/CSP/Registry values |
-Windows LAPS in legacy MS LAPS emulation mode | Windows 11 IP | built-in feature | MS LAPS (AdmPwd) policies | - MS LAPS (AdmPwd) CSE must not be installed.<br />- Windows LAPS configuration must not set.
+Windows LAPS in legacy MS LAPS emulation mode | Windows 11 IP | built-in feature | MS LAPS (AdmPwd) policies | - MS LAPS (AdmPwd) CSE must not installed.<br />- Windows LAPS configuration must not set.
 Legacy Microsoft LAPS & Windows LAPS running parallel |  Windows 11 IP | - MS LAPS (AdmPwd) CSE<br />- Windows LAPS as built-in feature. | - MS LAPS (AdmPwd) policies<br />- Windows LAPS GPO/CSP/Registry values | Both LAPS version have to manage different user accounts.
 
 ## Support
