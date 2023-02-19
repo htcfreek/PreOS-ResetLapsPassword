@@ -7,7 +7,9 @@
 
 A PreOS-Package for Matrix42 Empirum to reset the LAPS password of a computer on reinstall.
 
-The package works with Windows 10 (Build 19041 and higher) and Windows 11. Legacy Microsoft LAPS (only Windows 10) and Widows LAPS are supported. An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
+The package works with Windows 10 (Build 19041 and higher) or Windows 11. Legacy Microsoft LAPS and Windows LAPS (at lest Windows 11 IP) are supported. An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
+
+For more details about the LAPS modes and configuration see the [LAPS configuration table](#LAPS-configuration-requirements) below.
 
 The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: <https://www.microsoft.com/en-us/download/details.aspx?id=46899>)
 
@@ -40,6 +42,15 @@ _¹) Not supported in Windows LAPS with Azure AD as backup target, because of ho
 - **ResetImmediately : 0 (default) or 1**
     <br />If set to 1 the password is reset immediately instead of changing the expiration time.
     <br />(Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
+
+### LAPS configuration requirements
+
+Mode | Supported OS | Install requirements | Configuration requirements | ⚠ Notes ⚠
+------------ | ------------- | ------------- | ------------- | -------------
+Legacy Microsoft LAPS | Up to the newest Windows version. | MS LAPS (AdmPwd) CSE | MS LAPS (AdmPwd) policies |
+Windows LAPS | Windows 11 IP | built-in feature | Windows LAPS GPO/CSP/Registry values |
+Windows LAPS in legacy MS LAPS emulation mode | Windows 11 IP | built-in feature | MS LAPS (AdmPwd) policies | - MS LAPS (AdmPwd) CSE must not be installed.<br />- Windows LAPS configuration must not set.
+Legacy Microsoft LAPS & Windows LAPS running parallel |  Windows 11 IP | - MS LAPS (AdmPwd) CSE<br />- Windows LAPS as built-in feature. | - MS LAPS (AdmPwd) policies<br />- Windows LAPS GPO/CSP/Registry values | Both LAPS version have to manage different user accounts.
 
 ## Support
 
