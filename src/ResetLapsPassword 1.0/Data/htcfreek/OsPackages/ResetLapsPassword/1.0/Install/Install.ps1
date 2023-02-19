@@ -1,6 +1,6 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 0.2-prerelease
+Version: 1.0
 Developer: htcfreek (Heiko Horwedel)
 Created at: 25.01.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
@@ -43,6 +43,7 @@ Exit-Codes:
 Changes (Date / Version / Author / Change):
 2022-11-11 / 0.1 / htcfreek / Initial pre-release version of the package.
 2023-01-25 / 0.2 / htcfreek / Complete rewrite of the package with changed variables and behavior.
+2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
 
 #>
 
@@ -292,7 +293,7 @@ function Get-LegacyLapsState()
         if (Confirm-RegValueIsDefined -RegPath $regKey -RegValueName "AdminAccountName")
         {
             $resultData.UserName = Get-ItemPropertyValue -Path $regKey -Name "AdminAccountName"
-            if (-Not (Get-LocalUser -Name $resultData.UserName))
+            if (-Not (Get-LocalUser -Name $resultData.UserName -ErrorAction SilentlyContinue))
             {
                 # If the managed user does not exist on the system, set the property to $false.
                 $resultData.UserDoesExist = $false
@@ -373,7 +374,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
             if (Confirm-RegValueIsDefined -RegPath $regKeyCSP -RegValueName "AdministratorAccountName")
             {
                 $resultData.UserName = Get-ItemPropertyValue -Path $regKeyCSP -Name "AdministratorAccountName"
-                if (-Not (Get-LocalUser -Name $resultData.UserName))
+                if (-Not (Get-LocalUser -Name $resultData.UserName -ErrorAction SilentlyContinue))
                 {
                     # If the managed user does not exist on the system, set the property to $false.
                     $resultData.UserDoesExist = $false
@@ -395,7 +396,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
             if (Confirm-RegValueIsDefined -RegPath $regKeyPolicy -RegValueName "AdministratorAccountName")
             {
                 $resultData.UserName = Get-ItemPropertyValue -Path $regKeyPolicy -Name "AdministratorAccountName"
-                if (-Not (Get-LocalUser -Name $resultData.UserName))
+                if (-Not (Get-LocalUser -Name $resultData.UserName -ErrorAction SilentlyContinue))
                 {
                     # If the managed user does not exist on the system, set the property to $false.
                     $resultData.UserDoesExist = $false
@@ -417,7 +418,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
             if (Confirm-RegValueIsDefined -RegPath $regKeyLocal -RegValueName "AdministratorAccountName")
             {
                 $resultData.UserName = Get-ItemPropertyValue -Path $regKeyLocal -Name "AdministratorAccountName"
-                if (-Not (Get-LocalUser -Name $resultData.UserName))
+                if (-Not (Get-LocalUser -Name $resultData.UserName -ErrorAction SilentlyContinue))
                 {
                     # If the managed user does not exist on the system, set the property to $false.
                     $resultData.UserDoesExist = $false
@@ -439,7 +440,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
             if (Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdminAccountName")
             {
                 $resultData.UserName = Get-ItemPropertyValue -Path $regKeyLegacy -Name "AdminAccountName"
-                if (-Not (Get-LocalUser -Name $resultData.UserName))
+                if (-Not (Get-LocalUser -Name $resultData.UserName -ErrorAction SilentlyContinue))
                 {
                     # If the managed user does not exist on the system, set the property to $false.
                     $resultData.UserDoesExist = $false
@@ -517,7 +518,7 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     # Return result
     # - "Windows LAPS" and "legacy Microsoft LAPS" can run side by side, as long as they manage different accounts. (The check for different accounts happens a few lines before.)
     # - "Windows LAPS" can run in "Legacy Emulation Mode" if the legacy "Microsoft LAPS" CSE is not installed.
-    # - The LAPS user account can only exist, if the corresponding LAPS is enabled/configured.
+    # - For logical reasons, the LAPS user account can only exist, if the corresponding LAPS is enabled/configured.
     $resetOperations.LegacyLaps = ($legacyLapsProperties.Enabled -and $legacyLapsProperties.Installed)
     $resetOperations.WinLaps = ($winLapsProperties.Enabled -and $winLapsProperties.Installed -and !$winLapsProperties.LegacyEmulation)
     $resetOperations.WinLapsInEmulationMode = ($winLapsProperties.Enabled -and $winLapsProperties.Installed -and $winLapsProperties.LegacyEmulation)

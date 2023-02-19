@@ -5,15 +5,17 @@
 
 PreOS-Package: ResetLapsPassword
 Author: Heiko Horwedel (htcfreek)
-Version: 0.2-prerelease
+Version: 1.0
 
 
 PACKAGE INFORMATION
 -------------------
 A PreOS-Package for Matrix42 Empirum to reset the LAPS password of a computer on reinstall.
 
-The package works with Windows 10 (Build 19041 and higher) and Windows 11. Legacy Microsoft LAPS (only Windows 10) and Widows LAPS are supported.
+The package works with Windows 10 (Build 19041 and higher) or Windows 11. Legacy Microsoft LAPS and Windows LAPS (at least Windows 11 IP) are supported.
 An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
+
+For more details about the LAPS modes and configuration see the LAPS configuration table: https://github.com/htcfreek/PreOS-ResetLapsPassword#LAPS-configuration-requirements
 
 The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: https://www.microsoft.com/en-us/download/details.aspx?id=46899)
 
