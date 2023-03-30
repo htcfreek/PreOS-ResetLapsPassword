@@ -5,7 +5,7 @@
 
 PreOS-Package: ResetLapsPassword
 Author: Heiko Horwedel (htcfreek)
-Version: 1.0
+Version: 1.1
 
 
 PACKAGE INFORMATION
