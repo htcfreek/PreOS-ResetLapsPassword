@@ -259,7 +259,7 @@ function Get-LegacyLapsState()
     # Returns an object with the following members:
     #    - Installed : Yes=$true, No=$false (bool value)
     #    - Enabled : Yes=$true, No=$false (bool value)
-    #    - UserName
+    #    - UserName : Name of managed user or empty if built-in Admin
     #    - UserExists : Yes=$true, No=$false, <Builtin Admin>=$true
 
     # Initialize return object variable
@@ -318,7 +318,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     #    - LegacyEmulation : Yes=$true, No=$false (bool value)
     #    - ConfigSource (Possible values: "CSP", "GPO", "Local configuration", "Legacy LAPS")
     #    - TargetDirectory (Possible values: "Azure AD", "Active Directory")
-    #    - UserName
+    #    - UserName : Name of managed user or empty if built-in Admin
     #    - UserExists : Yes=$true, No=$false, <Builtin Admin>=$true
 
     # Initialize return object variable
@@ -477,11 +477,13 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     # Get configuration
     WriteLogDebug "Detecting LAPS configuration ..."
     $legacyLapsProperties = Get-LegacyLapsState;
+    $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
+    $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
     WriteLogInfo "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled)"
-    WriteLogDebug "Legacy Microsoft LAPS user: $($legacyLapsProperties.UserName)"
+    WriteLogDebug "Legacy Microsoft LAPS user: $($legacyLapsUser)"
     WriteLogInfo "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
-    WriteLogDebug "Windows LAPS user: $($winLapsProperties.UserName)"
+    WriteLogDebug "Windows LAPS user: $($winLapsUser)"
 
     # Checking results
     if (($legacyLapsProperties.Enabled -eq $false) -AND ($winLapsProperties.Enabled -eq $false))
