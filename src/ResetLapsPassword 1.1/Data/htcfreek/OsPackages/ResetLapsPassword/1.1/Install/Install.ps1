@@ -243,7 +243,7 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
     }
 
     # Write the summary to log.
-    WriteLogInfo "Management summary: Azure AD joined = $(ConvertTo-YesNo $isAzureAD), Domain joined = $(ConvertTo-YesNo $isActiveDirectory), Workgroup joined = $(ConvertTo-YesNo $isWorkgroup), Intune enrolled = $(ConvertTo-YesNo $isIntuneMDM)"
+    WriteLogDebug "Management summary: Azure AD joined = $(ConvertTo-YesNo $isAzureAD), Domain joined = $(ConvertTo-YesNo $isActiveDirectory), Workgroup joined = $(ConvertTo-YesNo $isWorkgroup), Intune enrolled = $(ConvertTo-YesNo $isIntuneMDM)"
 
     # Return result (<$true> if joined and <$false> if not.)
     return ($isAzureAD -or $isActiveDirectory)
@@ -480,10 +480,8 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
     $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
-    WriteLogInfo "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled)"
-    WriteLogDebug "Legacy Microsoft LAPS user: $($legacyLapsUser)"
-    WriteLogInfo "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
-    WriteLogDebug "Windows LAPS user: $($winLapsUser)"
+    WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), Managed user = $($legacyLapsUser)"
+    WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
 
     # Checking results
     if (($legacyLapsProperties.Enabled -eq $false) -AND ($winLapsProperties.Enabled -eq $false))
@@ -543,8 +541,8 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
     # Debug/Log information
     WriteLogDebug "Starting reset sequence ..."
     WriteLogDebug "Final reset task summary: $($LapsResetTasks -replace ';',',' -replace '@{','' -replace '}',',') DoResetImmediately=$($DoResetImmediately)"
+    WriteLogDebug "Executing user account: $env:Username"
     if ($DoResetImmediately) { WriteLogInfo "Immediate reset is enabled." } Else { WriteLogInfo "Immediate reset is disabled. - Only expiration time will be set." }
-    WriteLogInfo "Executing user account: $env:Username"
 
     # Reset Windows LAPS password.
     if ($LapsResetTasks.WinLaps)
@@ -588,7 +586,7 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
     if ($LapsResetTasks.WinLapsInEmulationMode -or $LapsResetTasks.LegacyLaps)
     {
         WriteLogInfo "Resetting password for legacy Microsoft LAPS user ..."
-        if ($LapsResetTasks.WinLapsInEmulationMode) { WriteLogInfo "Windows LAPS is running in legacy Microsoft LAPS emulation mode. - Using the Microsoft LAPS module." }
+        if ($LapsResetTasks.WinLapsInEmulationMode) { WriteLogDebug "Windows LAPS is running in legacy Microsoft LAPS emulation mode. - Using the Microsoft LAPS PowerShell module." }
 
         try
         {
@@ -635,7 +633,7 @@ function Main() {
     }
     else {
         [string] $osInfo = (Get-WmiObject -class Win32_OperatingSystem).Caption + " " + (Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name "DisplayVersion") + " (Build $([System.Environment]::OSVersion.Version.Build))"
-        WriteLogInfo -Message "Operating System: $($osInfo)"
+        WriteLogDebug -Message "Operating System: $($osInfo)"
     }
 
     # Check user context
@@ -666,10 +664,10 @@ function Main() {
     {
          try {
             [string] $lapsLegacyModulePath = (Split-Path $PSScriptRoot -Parent) + "\AdmPwd.PSModule\AdmPwd.PS.psd1"
-            WriteLogInfo -message "Importing module for legacy 'Microsoft LAPS' (AdmPwd.PS.psd1) ..."
+            WriteLogDebug -message "Importing module for legacy 'Microsoft LAPS' (AdmPwd.PS.psd1) ..."
             WriteLogDebug "Module path: $($lapsLegacyModulePath)"
             Import-Module "$lapsLegacyModulePath" -ErrorAction Stop
-            WriteLogInfo -message "Module imported successfully."
+            WriteLogDebug -message "Module imported successfully."
         } catch {
             ExitWithCodeMessage -errorCode 509 -errorMessage "ERROR: Failed to import PowerShell module for legacy Microsoft LAPS (AdmPwd.PS.psd1)! - $($_.Exception.Message)"
         }
