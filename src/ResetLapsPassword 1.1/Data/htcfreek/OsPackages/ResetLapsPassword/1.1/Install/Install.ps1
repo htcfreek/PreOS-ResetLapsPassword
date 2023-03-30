@@ -89,9 +89,9 @@ function WriteLogDebug([string] $Message)
     Write-Host "[ResetLapsPassword] $message" -ForegroundColor Magenta;
 }
 
-function ExitWithCodeMessage($errorCode, $errorMessage)
+function ExitWithCodeMessage([int]$errorCode, [string]$errorMessage, [Switch]$isAbortReboot)
 {
-    If ($errorCode -eq 0)
+    If (($errorCode -eq 0) -or ($isAbortReboot))
     {
         WriteLogInfo -Message $errorMessage;
     }
@@ -202,7 +202,7 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
     $regNetlogon = Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon" -Name
     if (($regNetlogon -contains 'JoinDomain') -or ($regNetlogon -contains 'AvoidSpnSet'))
     {
-        ExitWithCodeMessage -errorCode 504 -errorMessage "ERROR: Pending reboot from an Active Directory domain join detected! - Rebooting client ..."
+        ExitWithCodeMessage -errorCode 504 -errorMessage "IMPORTANT: Pending reboot from an Active Directory domain join detected! - Rebooting client ..." -isAbortReboot
     }
 
     # If the device is joined to a local Active Directory, then update the GPOs.
