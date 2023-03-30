@@ -427,9 +427,9 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
             }
         }
     }
-    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false))
+    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false) -AND ($resultData.Installed -eq $true))
     {
-        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed.)
+        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed and Windows LAPS is installed.)
         If ((Get-ItemPropertyValue -Path $regKeyLegacy -Name "AdmPwdEnabled") -eq 1)
         {
             $resultData.Enabled = $true
