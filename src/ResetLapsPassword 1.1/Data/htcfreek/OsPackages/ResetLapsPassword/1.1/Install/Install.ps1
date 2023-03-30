@@ -1,8 +1,8 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 1.0
+Version: 1.1
 Developer: htcfreek (Heiko Horwedel)
-Created at: 25.01.2023
+Created at: 30.03.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 
 Systems requirements:
@@ -44,6 +44,7 @@ Changes (Date / Version / Author / Change):
 2022-11-11 / 0.1 / htcfreek / Initial pre-release version of the package.
 2023-01-25 / 0.2 / htcfreek / Complete rewrite of the package with changed variables and behavior.
 2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
+2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
 
 #>
 
@@ -88,9 +89,9 @@ function WriteLogDebug([string] $Message)
     Write-Host "[ResetLapsPassword] $message" -ForegroundColor Magenta;
 }
 
-function ExitWithCodeMessage($errorCode, $errorMessage)
+function ExitWithCodeMessage([int]$errorCode, [string]$errorMessage, [Switch]$isAbortReboot)
 {
-    If ($errorCode -eq 0)
+    If (($errorCode -eq 0) -or ($isAbortReboot))
     {
         WriteLogInfo -Message $errorMessage;
     }
@@ -201,7 +202,7 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
     $regNetlogon = Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon" -Name
     if (($regNetlogon -contains 'JoinDomain') -or ($regNetlogon -contains 'AvoidSpnSet'))
     {
-        ExitWithCodeMessage -errorCode 504 -errorMessage "ERROR: Pending reboot from an Active Directory domain join detected! - Rebooting client ..."
+        ExitWithCodeMessage -errorCode 504 -errorMessage "IMPORTANT: Pending reboot from an Active Directory domain join detected! - Rebooting client ..." -isAbortReboot
     }
 
     # If the device is joined to a local Active Directory, then update the GPOs.
@@ -242,7 +243,7 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
     }
 
     # Write the summary to log.
-    WriteLogInfo "Management summary: Azure AD joined = $(ConvertTo-YesNo $isAzureAD), Domain joined = $(ConvertTo-YesNo $isActiveDirectory), Workgroup joined = $(ConvertTo-YesNo $isWorkgroup), Intune enrolled = $(ConvertTo-YesNo $isIntuneMDM)"
+    WriteLogDebug "Management summary: Azure AD joined = $(ConvertTo-YesNo $isAzureAD), Domain joined = $(ConvertTo-YesNo $isActiveDirectory), Workgroup joined = $(ConvertTo-YesNo $isWorkgroup), Intune enrolled = $(ConvertTo-YesNo $isIntuneMDM)"
 
     # Return result (<$true> if joined and <$false> if not.)
     return ($isAzureAD -or $isActiveDirectory)
@@ -258,7 +259,7 @@ function Get-LegacyLapsState()
     # Returns an object with the following members:
     #    - Installed : Yes=$true, No=$false (bool value)
     #    - Enabled : Yes=$true, No=$false (bool value)
-    #    - UserName
+    #    - UserName : Name of managed user or empty if built-in Admin
     #    - UserExists : Yes=$true, No=$false, <Builtin Admin>=$true
 
     # Initialize return object variable
@@ -317,7 +318,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     #    - LegacyEmulation : Yes=$true, No=$false (bool value)
     #    - ConfigSource (Possible values: "CSP", "GPO", "Local configuration", "Legacy LAPS")
     #    - TargetDirectory (Possible values: "Azure AD", "Active Directory")
-    #    - UserName
+    #    - UserName : Name of managed user or empty if built-in Admin
     #    - UserExists : Yes=$true, No=$false, <Builtin Admin>=$true
 
     # Initialize return object variable
@@ -426,9 +427,9 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
             }
         }
     }
-    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false))
+    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false) -AND ($resultData.Installed -eq $true))
     {
-        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed.)
+        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed and Windows LAPS is installed.)
         If ((Get-ItemPropertyValue -Path $regKeyLegacy -Name "AdmPwdEnabled") -eq 1)
         {
             $resultData.Enabled = $true
@@ -476,11 +477,11 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     # Get configuration
     WriteLogDebug "Detecting LAPS configuration ..."
     $legacyLapsProperties = Get-LegacyLapsState;
+    $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
-    WriteLogInfo "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled)"
-    WriteLogDebug "Legacy Microsoft LAPS user: $($legacyLapsProperties.UserName)"
-    WriteLogInfo "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
-    WriteLogDebug "Windows LAPS user: $($winLapsProperties.UserName)"
+    $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
+    WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), Managed user = $($legacyLapsUser)"
+    WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
 
     # Checking results
     if (($legacyLapsProperties.Enabled -eq $false) -AND ($winLapsProperties.Enabled -eq $false))
@@ -540,8 +541,8 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
     # Debug/Log information
     WriteLogDebug "Starting reset sequence ..."
     WriteLogDebug "Final reset task summary: $($LapsResetTasks -replace ';',',' -replace '@{','' -replace '}',',') DoResetImmediately=$($DoResetImmediately)"
+    WriteLogDebug "Executing user account: $env:Username"
     if ($DoResetImmediately) { WriteLogInfo "Immediate reset is enabled." } Else { WriteLogInfo "Immediate reset is disabled. - Only expiration time will be set." }
-    WriteLogInfo "Executing user account: $env:Username"
 
     # Reset Windows LAPS password.
     if ($LapsResetTasks.WinLaps)
@@ -585,7 +586,7 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
     if ($LapsResetTasks.WinLapsInEmulationMode -or $LapsResetTasks.LegacyLaps)
     {
         WriteLogInfo "Resetting password for legacy Microsoft LAPS user ..."
-        if ($LapsResetTasks.WinLapsInEmulationMode) { WriteLogInfo "Windows LAPS is running in legacy Microsoft LAPS emulation mode. - Using the Microsoft LAPS module." }
+        if ($LapsResetTasks.WinLapsInEmulationMode) { WriteLogDebug "Windows LAPS is running in legacy Microsoft LAPS emulation mode. - Using the Microsoft LAPS PowerShell module." }
 
         try
         {
@@ -632,7 +633,7 @@ function Main() {
     }
     else {
         [string] $osInfo = (Get-WmiObject -class Win32_OperatingSystem).Caption + " " + (Get-ItemPropertyValue -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion' -Name "DisplayVersion") + " (Build $([System.Environment]::OSVersion.Version.Build))"
-        WriteLogInfo -Message "Operating System: $($osInfo)"
+        WriteLogDebug -Message "Operating System: $($osInfo)"
     }
 
     # Check user context
@@ -663,10 +664,10 @@ function Main() {
     {
          try {
             [string] $lapsLegacyModulePath = (Split-Path $PSScriptRoot -Parent) + "\AdmPwd.PSModule\AdmPwd.PS.psd1"
-            WriteLogInfo -message "Importing module for legacy 'Microsoft LAPS' (AdmPwd.PS.psd1) ..."
+            WriteLogDebug -message "Importing module for legacy 'Microsoft LAPS' (AdmPwd.PS.psd1) ..."
             WriteLogDebug "Module path: $($lapsLegacyModulePath)"
             Import-Module "$lapsLegacyModulePath" -ErrorAction Stop
-            WriteLogInfo -message "Module imported successfully."
+            WriteLogDebug -message "Module imported successfully."
         } catch {
             ExitWithCodeMessage -errorCode 509 -errorMessage "ERROR: Failed to import PowerShell module for legacy Microsoft LAPS (AdmPwd.PS.psd1)! - $($_.Exception.Message)"
         }
