@@ -1,8 +1,8 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 1.1
+Version: 1.2
 Developer: htcfreek (Heiko Horwedel)
-Created at: 30.03.2023
+Created at: 04.04.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 
 Systems requirements:
@@ -25,7 +25,7 @@ Package variables:
         If set to 1 the password is reset immediately instead of changing the expiration time.
         (Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
 
-Exit-Codes:
+Exit codes:
       0 : Script executed successful.
     501 : Package execution has stopped, because it is running in WinPE.
     502 : Operating System is not supported.
@@ -40,11 +40,19 @@ Exit-Codes:
     511 : Windows LAPS password reset failed.
     512 : Legacy Microsoft LAPS password reset failed.
 
+Log levels:
+          ERROR : Something that is causing the script to fail.
+        WARNING : Something that might need some action.
+         NOTICE : An information that is important.
+    INFORMATION : Normal execution information. (No prefix in the log text.)
+          DEBUG : Information needed when analyzing problems. (No prefix in the log text and written to "Host" log only.)
+
 Changes (Date / Version / Author / Change):
 2022-11-11 / 0.1 / htcfreek / Initial pre-release version of the package.
 2023-01-25 / 0.2 / htcfreek / Complete rewrite of the package with changed variables and behavior.
 2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
+2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot.; Adding a description of the log levels.
 
 #>
 
@@ -202,7 +210,11 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
     $regNetlogon = Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon" -Name
     if (($regNetlogon -contains 'JoinDomain') -or ($regNetlogon -contains 'AvoidSpnSet'))
     {
-        ExitWithCodeMessage -errorCode 504 -errorMessage "IMPORTANT: Pending reboot from an Active Directory domain join detected! - Rebooting client ..." -isAbortReboot
+        WriteLogInfo "NOTICE: Pending reboot from an Active Directory domain join detected! - Reboot required."
+
+        # Setting "on error delay" to 5 seconds and exit with error code other than 0 to reboot immediately and restart the package execution.
+        Set-EmpirumAgentSetting -Key "Matrix42.Platform.Service.Extension.PeAgent.DelayOnErrorInSeconds" -Value 5
+        ExitWithCodeMessage -errorCode 504 -errorMessage "NOTICE: Rebooting the client, to continue the package execution afterwards ..." -isAbortReboot
     }
 
     # If the device is joined to a local Active Directory, then update the GPOs.
