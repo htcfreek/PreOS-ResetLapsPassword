@@ -1,8 +1,8 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 1.1
+Version: 1.2
 Developer: htcfreek (Heiko Horwedel)
-Created at: 30.03.2023
+Created at: 04.04.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 
 Systems requirements:
@@ -45,6 +45,7 @@ Changes (Date / Version / Author / Change):
 2023-01-25 / 0.2 / htcfreek / Complete rewrite of the package with changed variables and behavior.
 2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
+2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot. 
 
 #>
 
