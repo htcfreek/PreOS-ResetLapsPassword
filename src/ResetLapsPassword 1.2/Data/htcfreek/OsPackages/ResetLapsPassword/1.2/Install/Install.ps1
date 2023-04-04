@@ -41,7 +41,7 @@ Exit codes:
     512 : Legacy Microsoft LAPS password reset failed.
 
 Log levels:
-          ERROR : Somthing that is causing the script to fail.
+          ERROR : Something that is causing the script to fail.
         WARNING : Something that might need some action.
          NOTICE : An information that is important.
     INFORMATION : Normal execution information. (No prefix in the log text.)
