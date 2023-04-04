@@ -25,7 +25,7 @@ Package variables:
         If set to 1 the password is reset immediately instead of changing the expiration time.
         (Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
 
-Exit-Codes:
+Exit codes:
       0 : Script executed successful.
     501 : Package execution has stopped, because it is running in WinPE.
     502 : Operating System is not supported.
@@ -39,6 +39,13 @@ Exit-Codes:
     510 : Windows LAPS user does not exist.
     511 : Windows LAPS password reset failed.
     512 : Legacy Microsoft LAPS password reset failed.
+
+Log levels:
+          ERROR : Somthing that is causing the script to fail.
+        WARNING : Something that might need some action.
+         NOTICE : An information that is important.
+    INFORMATION : Normal execution information. (No prefix in the log text.)
+          DEBUG : Information needed when analysing problems. (No prefix in the log text and written to "Host" log only.)
 
 Changes (Date / Version / Author / Change):
 2022-11-11 / 0.1 / htcfreek / Initial pre-release version of the package.
