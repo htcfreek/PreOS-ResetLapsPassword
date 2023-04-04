@@ -45,7 +45,7 @@ Log levels:
         WARNING : Something that might need some action.
          NOTICE : An information that is important.
     INFORMATION : Normal execution information. (No prefix in the log text.)
-          DEBUG : Information needed when analysing problems. (No prefix in the log text and written to "Host" log only.)
+          DEBUG : Information needed when analyzing problems. (No prefix in the log text and written to "Host" log only.)
 
 Changes (Date / Version / Author / Change):
 2022-11-11 / 0.1 / htcfreek / Initial pre-release version of the package.
@@ -214,7 +214,7 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
 
         # Setting "on error delay" to 5 seconds and exit with error code other than 0 to reboot immediately and restart the package execution.
         Set-EmpirumAgentSetting -Key "Matrix42.Platform.Service.Extension.PeAgent.DelayOnErrorInSeconds" -Value 5
-        ExitWithCodeMessage -errorCode 504 -errorMessage "NOTICE: Initiating a reboot to continue the package execution afterwards ..." -isAbortReboot
+        ExitWithCodeMessage -errorCode 504 -errorMessage "NOTICE: Rebooting the client, to continue the package execution afterwards ..." -isAbortReboot
     }
 
     # If the device is joined to a local Active Directory, then update the GPOs.
