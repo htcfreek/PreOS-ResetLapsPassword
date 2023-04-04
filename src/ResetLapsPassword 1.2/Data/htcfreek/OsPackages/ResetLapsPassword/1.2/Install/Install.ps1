@@ -210,7 +210,11 @@ function Update-ClientMgmtConfiguration([int]$IntuneSyncTimeout)
     $regNetlogon = Get-ChildItem -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Netlogon" -Name
     if (($regNetlogon -contains 'JoinDomain') -or ($regNetlogon -contains 'AvoidSpnSet'))
     {
-        ExitWithCodeMessage -errorCode 504 -errorMessage "IMPORTANT: Pending reboot from an Active Directory domain join detected! - Rebooting client ..." -isAbortReboot
+        WriteLogInfo "NOTICE: Pending reboot from an Active Directory domain join detected! - Reboot required."
+
+        # Setting "on error delay" to 5 seconds and exit with error code other than 0 to reboot immediately and restart the package execution.
+        Set-EmpirumAgentSetting -Key "Matrix42.Platform.Service.Extension.PeAgent.DelayOnErrorInSeconds" -Value 5
+        ExitWithCodeMessage -errorCode 504 -errorMessage "NOTICE: Initiating a reboot to continue the package execution afterwards ..." -isAbortReboot
     }
 
     # If the device is joined to a local Active Directory, then update the GPOs.
