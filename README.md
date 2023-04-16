@@ -7,9 +7,9 @@
 
 A PreOS-Package for Matrix42 Empirum to reset the LAPS password of a computer on reinstall.
 
-The package works with Windows 10 (Build 19041 and higher) or Windows 11. Legacy Microsoft LAPS and Windows LAPS (at lest Windows 11 IP) are supported. An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
+The package works with Windows 10 (Build 19041 and higher) or Windows 11. Legacy Microsoft LAPS and Windows LAPS are supported. An up to date Empirum WinPE environment (at least 1.8.12) and PowerShell 5.1 are required!
 
-For more details about the LAPS modes and configuration see the [LAPS configuration table](#LAPS-configuration-requirements) below.
+For more details about the LAPS modes, supported Operating Systems and configuration see the [LAPS configuration table](#LAPS-configuration-requirements) below.
 
 The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: <https://www.microsoft.com/en-us/download/details.aspx?id=46899>)
 
@@ -48,9 +48,11 @@ _¹) Not supported in Windows LAPS with Azure AD as backup target, because of ho
 Mode | Supported OS | Install requirements | Configuration requirements | ⚠ Important ⚠
 ------------ | ------------- | ------------- | ------------- | -------------
 Legacy Microsoft LAPS | Up to the newest Windows version. | MS LAPS (AdmPwd) CSE | MS LAPS (AdmPwd) policies |
-Windows LAPS | Windows 11 IP | built-in feature | Windows LAPS GPO/CSP/Registry values |
-Windows LAPS in legacy MS LAPS emulation mode | Windows 11 IP | built-in feature | MS LAPS (AdmPwd) policies | - MS LAPS (AdmPwd) CSE must not be installed.<br />- Windows LAPS configuration must not be set.
-Legacy Microsoft LAPS & Windows LAPS running parallel |  Windows 11 IP | - MS LAPS (AdmPwd) CSE<br />- Windows LAPS as built-in feature. | - MS LAPS (AdmPwd) policies<br />- Windows LAPS GPO/CSP/Registry values | Both LAPS version have to manage different user accounts.
+Windows LAPS | At least Windows 10&sup1; or Windows 11 21H2&sup1;. | built-in feature | Windows LAPS GPO/CSP/Registry values |
+Windows LAPS in legacy MS LAPS emulation mode | At least Windows 10&sup1; or Windows 11 21H2&sup1;. | built-in feature | MS LAPS (AdmPwd) policies | - MS LAPS (AdmPwd) CSE must not be installed.<br />- Windows LAPS configuration must not be set.
+Legacy Microsoft LAPS & Windows LAPS running parallel | At least Windows 10&sup1; or Windows 11 21H2&sup1;. | - MS LAPS (AdmPwd) CSE<br />- Windows LAPS as built-in feature. | - MS LAPS (AdmPwd) policies<br />- Windows LAPS GPO/CSP/Registry values | Both LAPS version have to manage different user accounts.
+
+_&sup1;) For Windows 10, Windows 11 21H1 and Windows 11 22H2 the Update from April 11 2023 is required._
 
 ## Support
 
