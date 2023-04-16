@@ -52,7 +52,7 @@ Windows LAPS | At least Windows 10&sup1; or Windows 11 21H2&sup1;. | built-in fe
 Windows LAPS in legacy MS LAPS emulation mode | At least Windows 10&sup1; or Windows 11 21H2&sup1;. | built-in feature | MS LAPS (AdmPwd) policies | - MS LAPS (AdmPwd) CSE must not be installed.<br />- Windows LAPS configuration must not be set.
 Legacy Microsoft LAPS & Windows LAPS running parallel | At least Windows 10&sup1; or Windows 11 21H2&sup1;. | - MS LAPS (AdmPwd) CSE<br />- Windows LAPS as built-in feature. | - MS LAPS (AdmPwd) policies<br />- Windows LAPS GPO/CSP/Registry values | Both LAPS version have to manage different user accounts.
 
-_&sup1;) For Windows 10, Windows 11 21H1 and Windows 11 22H2 the Update from April 11 2023 is required._
+_&sup1; For Windows 10, Windows 11 21H1 and Windows 11 22H2 the Update from April 11 2023 is required._
 
 ## Support
 
