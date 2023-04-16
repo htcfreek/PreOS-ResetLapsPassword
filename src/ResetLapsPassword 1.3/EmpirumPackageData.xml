@@ -86,6 +86,27 @@
                   <Type>0</Type>
                   <UpperValue i:nil="true" />
                 </ComputerVarDefinition>
+                <ComputerVarDefinition z:Id="i7">
+                  <AllowNull>1</AllowNull>
+                  <Children />
+                  <Collection>0</Collection>
+                  <ComboType>1</ComboType>
+                  <DefaultValue i:nil="true" />
+                  <Description>If set to 1, for Windows LAPS with Azure AD as target the password is reset even if already done by the system. (Default value: 0)</Description>
+                  <Id>0</Id>
+                  <LastUpdate>2023-04-16T11:25:13.2544555+02:00</LastUpdate>
+                  <LowerValue i:nil="true" />
+                  <Name>ForceResetOnAzureTarget</Name>
+                  <Objecttype i:nil="true" />
+                  <Parent i:nil="true" />
+                  <ParentId i:nil="true" />
+                  <PredefinedVariableValues />
+                  <Sequence i:nil="true" />
+                  <ShowFlag>0</ShowFlag>
+                  <SoftwareVarDefinitions />
+                  <Type>0</Type>
+                  <UpperValue i:nil="true" />
+                </ComputerVarDefinition>
               </Children>
               <Collection>0</Collection>
               <ComboType>9</ComboType>
@@ -151,7 +172,7 @@
         <Sequence i:nil="true" />
         <SoftwareAUTFiles />
         <SoftwareConditions />
-        <SoftwareDepotRegister z:Id="i7">
+        <SoftwareDepotRegister z:Id="i8">
           <Check i:nil="true" />
           <CheckFile i:nil="true" />
           <Description i:nil="true" />
@@ -166,14 +187,14 @@
           <SEQUENCE i:nil="true" />
           <Softwares />
           <SupportedOSCapabilities>
-            <OSCapability z:Id="i8">
+            <OSCapability z:Id="i9">
               <ID>0</ID>
               <ItemOSCapabilitiesMappings />
               <Name>x86</Name>
               <OSDatas />
               <UseInSyncJobs>0</UseInSyncJobs>
             </OSCapability>
-            <OSCapability z:Id="i9">
+            <OSCapability z:Id="i10">
               <ID>0</ID>
               <ItemOSCapabilitiesMappings />
               <Name>x64</Name>
@@ -182,7 +203,7 @@
             </OSCapability>
           </SupportedOSCapabilities>
           <SupportedOSs>
-            <OSData z:Id="i10">
+            <OSData z:Id="i11">
               <BaseName>Windows PE</BaseName>
               <BitFlag>8</BitFlag>
               <ID>0</ID>
@@ -200,11 +221,11 @@
         <SoftwareDomainGroups />
         <SubType>WinPE</SubType>
         <SupportedOSCapabilities>
-          <OSCapability z:Ref="i8" />
           <OSCapability z:Ref="i9" />
+          <OSCapability z:Ref="i10" />
         </SupportedOSCapabilities>
         <SupportedOSs>
-          <OSData z:Ref="i10" />
+          <OSData z:Ref="i11" />
         </SupportedOSs>
         <Tested i:nil="true" />
         <TokenId i:nil="true" />

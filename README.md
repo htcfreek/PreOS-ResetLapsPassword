@@ -22,9 +22,11 @@ The package has the Legacy LAPS PowerShell module from the Microsoft LAPS instal
 - Automatic detection of the client's LAPS configuration based on GPOs, CSP policies and Registry values.
 - Using the computer account credentials for password reset.
 - Skipping package execution if the computer is not joined to Azure AD or a local domain.
+- Skipping the password reset for Windows LAPS with Azure AD as target if already done by the system. ²
 - LAPS can be defined as mandatory using a package variable. (See [package variables](#package-variables) for more details.)
 
-_¹) Not supported in Windows LAPS with Azure AD as backup target, because of how LAPS works in this case. ([More information.](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-azure-active-directory#rotate-the-password))_
+_¹) Not supported in Windows LAPS with Azure AD as backup target, because of how LAPS works in this case. ([More information.](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-azure-active-directory#rotate-the-password))_<br />
+_²) Because the expiration time is stored locally on the machine it gets lost on reinstall and the reset should happens automatically. (There is a package variable to force the reset.)_
 
 ## Download and Usage
 
@@ -42,6 +44,8 @@ _¹) Not supported in Windows LAPS with Azure AD as backup target, because of ho
 - **ResetImmediately : 0 (default) or 1**
     <br />If set to 1 the password is reset immediately instead of changing the expiration time.
     <br />(Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
+- **ForceResetOnAzureTarget : 0 (default) or 1**
+    <br />If set to 1, for Windows LAPS with Azure AD as target the password is reset even if already done by the system. (Because the expiration time is stored local on the machine it gets lost on reinstall and the reset should happen automatically.)
 
 ### LAPS configuration requirements
 
