@@ -44,7 +44,7 @@ _²) Because the expiration time is stored locally on the machine it gets lost o
 - **ResetImmediately : 0 (default) or 1**
     <br />If set to 1 the password is reset immediately instead of changing the expiration time.
     <br />(Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
-- **ForceResetOnAzureTarget : 0 (default) or 1**
+- **ForceResetForAzureTarget : 0 (default) or 1**
     <br />If set to 1, for Windows LAPS with Azure AD as target the password is reset even if already done by the system. (Because the expiration time is stored local on the machine it gets lost on reinstall and the reset should happen automatically.)
 
 ### LAPS configuration requirements

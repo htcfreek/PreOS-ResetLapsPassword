@@ -96,7 +96,7 @@
                   <Id>0</Id>
                   <LastUpdate>2023-04-16T11:25:13.2544555+02:00</LastUpdate>
                   <LowerValue i:nil="true" />
-                  <Name>ForceResetOnAzureTarget</Name>
+                  <Name>ForceResetForAzureTarget</Name>
                   <Objecttype i:nil="true" />
                   <Parent i:nil="true" />
                   <ParentId i:nil="true" />
