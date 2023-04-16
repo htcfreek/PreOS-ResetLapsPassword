@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<EmpirumPackage UUID="82cea1eb-737d-4a00-a5bb-b838468425b5" Name="ResetLapsPassword 1.2" Type="OSPackage" Version="1.0">
-  <VersionInformation Version="1.2" Revision="0" />
+<EmpirumPackage UUID="6b9fb755-b8c0-4475-803d-5122cad13193" Name="ResetLapsPassword 1.3" Type="OSPackage" Version="1.0">
+  <VersionInformation Version="1.3" Revision="0" />
   <TargetPath />
   <Description>This package triggers the reset of the LAPS password for the client on which it is running.</Description>
   <DatabaseSettings></DatabaseSettings>
@@ -10,8 +10,8 @@
         <CatalogueID i:nil="true" />
         <GenerallyReleased>0001-01-01T00:00:00</GenerallyReleased>
         <Icon i:nil="true" />
-        <Id>82cea1eb-737d-4a00-a5bb-b838468425b5</Id>
-        <Name>ResetLapsPassword 1.2</Name>
+        <Id>6b9fb755-b8c0-4475-803d-5122cad13193</Id>
+        <Name>ResetLapsPassword 1.3</Name>
         <PackageAssignments />
         <ProductKey i:nil="true" />
         <Revision>0</Revision>
@@ -111,7 +111,7 @@
           </SoftwareVarDefinition>
         </SoftwareVarDefinitions>
         <Vendor>htcfreek</Vendor>
-        <Version>1.2</Version>
+        <Version>1.3</Version>
         <VersionFile i:nil="true" />
         <AllowUnInstallation>false</AllowUnInstallation>
         <Author i:nil="true" />
@@ -122,7 +122,7 @@
         <CheckReg i:nil="true" />
         <CreationDate i:nil="true" />
         <Description>This package triggers the reset of the LAPS password for the client on which it is running.</Description>
-        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\1.2</Directory>
+        <Directory>%Packages%\htcfreek\OsPackages\ResetLapsPassword\1.3</Directory>
         <Discontinue i:nil="true" />
         <DiskFreeApplication>0</DiskFreeApplication>
         <DiskFreeSystem>0</DiskFreeSystem>
@@ -141,7 +141,7 @@
         <MachineKeyName i:nil="true" />
         <Method i:nil="true" />
         <MinBandwidth i:nil="true" />
-        <PackageName>htcfreek\OsPackages\ResetLapsPassword\1.2</PackageName>
+        <PackageName>htcfreek\OsPackages\ResetLapsPassword\1.3</PackageName>
         <ParentID i:nil="true" />
         <Path i:nil="true" />
         <ProcessorSpeed>0</ProcessorSpeed>
