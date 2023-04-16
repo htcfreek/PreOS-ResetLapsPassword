@@ -26,7 +26,7 @@ The package has the Legacy LAPS PowerShell module from the Microsoft LAPS instal
 - LAPS can be defined as mandatory using a package variable. (See [package variables](#package-variables) for more details.)
 
 _¹) Not supported in Windows LAPS with Azure AD as backup target, because of how LAPS works in this case. ([More information.](https://learn.microsoft.com/windows-server/identity/laps/laps-scenarios-azure-active-directory#rotate-the-password))_<br />
-_²) Because the expiration time is stored locally on the machine it gets lost on reinstall and the reset should happens automatically. (There is a package variable to force the reset.)_
+_²) Because the expiration time is stored locally on the machine it gets lost on reinstall and the reset should happens automatically. (There is a [package variable](#package-variables) to force the reset.)_
 
 ## Download and Usage
 
