@@ -12,9 +12,9 @@ Systems requirements:
     - Legacy Microsoft LAPS and/or Windows LAPS
 
 Description:
-    This package triggers the reset of the LAPS password for the client on which it is running.
+    The package triggers the reset of the LAPS password for the client on which it is running.
     (On Azure environments only the immediate reset is supported.)
-    This package uses the credentials of the computer account/system account.
+    The package uses the credentials of the computer account/system account.
 
 Package variables:
     - IntuneSyncTimeout : 10 (default) or custom value.
@@ -26,7 +26,7 @@ Package variables:
         (Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
     - ForceResetOnAzureTarget : 0 (default) or 1
         If set to 1, for Windows LAPS with Azure AD as target the password is reset even if already done by the system.
-        (Because the expiration time is stored local on the machine it gets lost on reinstall and the reset should happen automatically.)
+        (Because the expiration time is stored local on the machine it gets lost on reinstall and the reset should happens automatically.)
 
 Exit codes:
       0 : Script executed successful.
@@ -56,7 +56,7 @@ Changes (Date / Version / Author / Change):
 2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
 2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot.; Adding a description of the log levels.
-2023-04-16 / 1.3 / htcfreek / Fix detection of disabled state for Windows LAPS in Legacy Mode.; Adding logging for "Force disabled" state.; Now the script can skip the reset on Windows LAPS with Azure AD as target, if already done.
+2023-04-16 / 1.3 / htcfreek / Fix detection of disabled state for Windows LAPS in Legacy Mode.; Add logging of "Force disabled" state.; Now the script can skip the reset on Windows LAPS with Azure AD as target, if already done.
 
 #>
 
