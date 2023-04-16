@@ -53,7 +53,7 @@ Changes (Date / Version / Author / Change):
 2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
 2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot.; Adding a description of the log levels.
-2023-04-16 / 1.3 / htcfreek / ...
+2023-04-16 / 1.3 / htcfreek / Fix detection of disbaled state for Windows LAPS in Legacy Mode.; Adding logging for "Force disabled" state.
 
 #>
 
@@ -272,6 +272,7 @@ function Get-LegacyLapsState()
     # Returns an object with the following members:
     #    - Installed : Yes=$true, No=$false (bool value)
     #    - Enabled : Yes=$true, No=$false (bool value)
+    #    - ForceDisabled : Yes=$true, No=$false (bool value)
     #    - UserName : Name of managed user or empty if built-in Admin
     #    - UserExists : Yes=$true, No=$false, <Builtin Admin>=$true
 
@@ -279,6 +280,7 @@ function Get-LegacyLapsState()
     $resultData = [PSCustomObject]@{
         Installed = $false
         Enabled = $false
+        ForceDisabled = $false
         UserName = ""
         UserDoesExist=$true
     }
@@ -301,6 +303,11 @@ function Get-LegacyLapsState()
         $regValue = Get-ItemPropertyValue -Path $regKey -Name "AdmPwdEnabled"
         if ($regValue -eq 1) {
             $resultData.Enabled = $true
+        }
+        else
+        {
+            # GPO is set to disabled.
+            $resultData.ForceDisabled = $true
         }
 
         # Get managed user (name) => Empty if default user or not configured.
@@ -328,6 +335,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     # Returns an object with the following members:
     #    - Installed : Yes=$true, No=$false (bool value)
     #    - Enabled : Yes=$true, No=$false (bool value)
+    #    - ForceDisabled : Yes=$true, No=$false (bool value)
     #    - LegacyEmulation : Yes=$true, No=$false (bool value)
     #    - ConfigSource (Possible values: "CSP", "GPO", "Local configuration", "Legacy LAPS")
     #    - TargetDirectory (Possible values: "Azure AD", "Active Directory")
@@ -338,6 +346,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     $resultData = [PSCustomObject]@{
         Installed = $true
         Enabled = $false
+        ForceDisabled = $false
         LegacyEmulation = $false
         ConfigSource = "None"
         TargetDirectory = "None"
@@ -395,6 +404,12 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
                 }
             }
         }
+        else
+        {
+            # LAPS is explicit disabled.
+            $resultData.ForceDisabled = $true
+            $resultData.ConfigSource = "CSP"
+        }
     }
     elseif (Confirm-RegValueIsDefined -RegPath $regKeyPolicy -RegValueName "BackupDirectory")
     {
@@ -416,6 +431,12 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
                     $resultData.UserDoesExist = $false
                 }
             }
+        }
+        else
+        {
+            # LAPS is explicit disabled.
+            $resultData.ForceDisabled = $true
+            $resultData.ConfigSource = "GPO"
         }
     }
     elseif (Confirm-RegValueIsDefined -RegPath $regKeyLocal -RegValueName "BackupDirectory")
@@ -439,10 +460,16 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
                 }
             }
         }
+        else
+        {
+            # LAPS is explicit disabled.
+            $resultData.ForceDisabled = $true
+            $resultData.ConfigSource = "Local configuration"
+        }
     }
-    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false) -AND ($resultData.Installed -eq $true))
+    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false) -AND ($resultData.Installed -eq $true) -AND ($resultData.ForceDisabled -eq $false))
     {
-        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed and Windows LAPS is installed.)
+        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed, Windows LAPS is installed and Windows LAPS is not force disabled.)
         If ((Get-ItemPropertyValue -Path $regKeyLegacy -Name "AdmPwdEnabled") -eq 1)
         {
             $resultData.Enabled = $true
@@ -493,8 +520,8 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
     $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
-    WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), Managed user = $($legacyLapsUser)"
-    WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
+    WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), Force disabled = $(ConvertTo-YesNo $legacyLapsProperties.ForceDisabled), Managed user = $($legacyLapsUser)"
+    WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Force disabled = $(ConvertTo-YesNo $winLapsProperties.ForceDisabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
 
     # Checking results
     if (($legacyLapsProperties.Enabled -eq $false) -AND ($winLapsProperties.Enabled -eq $false))
