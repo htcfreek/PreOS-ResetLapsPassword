@@ -1,8 +1,8 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 1.2
+Version: 1.3
 Developer: htcfreek (Heiko Horwedel)
-Created at: 04.04.2023
+Created at: 16.04.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 
 Systems requirements:
@@ -12,10 +12,10 @@ Systems requirements:
     - Legacy Microsoft LAPS and/or Windows LAPS
 
 Description:
-    This package triggers the reset of the LAPS password for the client on which it is running.
+    The package triggers the reset of the LAPS password for the client on which it is running.
     (On Azure environments only the immediate reset is supported.)
-    By default this package uses the credentials of the computer account/system account.
- 
+    The package uses the credentials of the computer account/system account.
+
 Package variables:
     - IntuneSyncTimeout : 10 (default) or custom value.
         Number of minutes to wait for the first Intune policy sync cycle.
@@ -24,6 +24,9 @@ Package variables:
     - ResetImmediately : 0 (default) or 1
         If set to 1 the password is reset immediately instead of changing the expiration time.
         (Enforced automatically in Azure AD environments, because changing the expiration time is not supported in this scenario.)
+    - ForceResetForAzureTarget : 0 (default) or 1
+        If set to 1, for Windows LAPS with Azure AD as target the password is reset even if already done by the system.
+        (Because the expiration time is stored local on the machine it gets lost on reinstall and the reset should happens automatically.)
 
 Exit codes:
       0 : Script executed successful.
@@ -53,6 +56,7 @@ Changes (Date / Version / Author / Change):
 2023-02-19 / 1.0 / htcfreek / Fix exception for missing LAPS user, comment improvement and first stable release.
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
 2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot.; Adding a description of the log levels.
+2023-04-16 / 1.3 / htcfreek / Fix detection of disabled state for Windows LAPS in Legacy Mode.; Add logging of "Force disabled" state.; Now the script can skip the reset on Windows LAPS with Azure AD as target, if already done.
 
 #>
 
@@ -271,6 +275,7 @@ function Get-LegacyLapsState()
     # Returns an object with the following members:
     #    - Installed : Yes=$true, No=$false (bool value)
     #    - Enabled : Yes=$true, No=$false (bool value)
+    #    - ForceDisabled : Yes=$true, No=$false (bool value)
     #    - UserName : Name of managed user or empty if built-in Admin
     #    - UserExists : Yes=$true, No=$false, <Builtin Admin>=$true
 
@@ -278,6 +283,7 @@ function Get-LegacyLapsState()
     $resultData = [PSCustomObject]@{
         Installed = $false
         Enabled = $false
+        ForceDisabled = $false
         UserName = ""
         UserDoesExist=$true
     }
@@ -301,6 +307,11 @@ function Get-LegacyLapsState()
         if ($regValue -eq 1) {
             $resultData.Enabled = $true
         }
+        else
+        {
+            # GPO is set to disabled.
+            $resultData.ForceDisabled = $true
+        }
 
         # Get managed user (name) => Empty if default user or not configured.
         if (Confirm-RegValueIsDefined -RegPath $regKey -RegValueName "AdminAccountName")
@@ -315,7 +326,7 @@ function Get-LegacyLapsState()
     }
 
     # Return results
-    return $resultData 
+    return $resultData
 }
 
 
@@ -327,6 +338,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     # Returns an object with the following members:
     #    - Installed : Yes=$true, No=$false (bool value)
     #    - Enabled : Yes=$true, No=$false (bool value)
+    #    - ForceDisabled : Yes=$true, No=$false (bool value)
     #    - LegacyEmulation : Yes=$true, No=$false (bool value)
     #    - ConfigSource (Possible values: "CSP", "GPO", "Local configuration", "Legacy LAPS")
     #    - TargetDirectory (Possible values: "Azure AD", "Active Directory")
@@ -337,6 +349,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     $resultData = [PSCustomObject]@{
         Installed = $true
         Enabled = $false
+        ForceDisabled = $false
         LegacyEmulation = $false
         ConfigSource = "None"
         TargetDirectory = "None"
@@ -394,6 +407,12 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
                 }
             }
         }
+        else
+        {
+            # LAPS is explicit disabled.
+            $resultData.ForceDisabled = $true
+            $resultData.ConfigSource = "CSP"
+        }
     }
     elseif (Confirm-RegValueIsDefined -RegPath $regKeyPolicy -RegValueName "BackupDirectory")
     {
@@ -415,6 +434,12 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
                     $resultData.UserDoesExist = $false
                 }
             }
+        }
+        else
+        {
+            # LAPS is explicit disabled.
+            $resultData.ForceDisabled = $true
+            $resultData.ConfigSource = "GPO"
         }
     }
     elseif (Confirm-RegValueIsDefined -RegPath $regKeyLocal -RegValueName "BackupDirectory")
@@ -438,10 +463,16 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
                 }
             }
         }
+        else
+        {
+            # LAPS is explicit disabled.
+            $resultData.ForceDisabled = $true
+            $resultData.ConfigSource = "Local configuration"
+        }
     }
-    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false) -AND ($resultData.Installed -eq $true))
+    elseif ((Confirm-RegValueIsDefined -RegPath $regKeyLegacy -RegValueName "AdmPwdEnabled") -AND ($IsLegacyCSE -eq $false) -AND ($resultData.Installed -eq $true) -AND ($resultData.ForceDisabled -eq $false))
     {
-        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed and Windows LAPS is installed.)
+        # Legacy Microsoft LAPS Policy (AdmPwd-Policy) - Legacy Emulation Mode. (Only if Legacy CSE is not installed, Windows LAPS is installed and Windows LAPS is not force disabled.)
         If ((Get-ItemPropertyValue -Path $regKeyLegacy -Name "AdmPwdEnabled") -eq 1)
         {
             $resultData.Enabled = $true
@@ -463,7 +494,7 @@ function Get-WindowsLapsState([bool]$IsLegacyCSE)
     }
 
     # Return results
-    return $resultData 
+    return $resultData
 }
 
 
@@ -492,8 +523,8 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
     $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
-    WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), Managed user = $($legacyLapsUser)"
-    WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
+    WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), GPO is disabled = $(ConvertTo-YesNo $legacyLapsProperties.ForceDisabled), Managed user = $($legacyLapsUser)"
+    WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Configuration set to disabled = $(ConvertTo-YesNo $winLapsProperties.ForceDisabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
 
     # Checking results
     if (($legacyLapsProperties.Enabled -eq $false) -AND ($winLapsProperties.Enabled -eq $false))
@@ -542,17 +573,18 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
 }
 
 
-function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoResetImmediately)
+function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoResetImmediately, [bool]$ForceResetForAzureTarget)
 {
     # Function: Invoke-LapsResetCommands
     # The function invokes the commands to reset the LAPS passwords.
     # Input parameter:
     #    - [PSCustomObject]$LapsResetTasks : Custom object generated by the function "Get-LapsResetTasks" containing the required reset information.
     #    - [bool]$DoResetImmediately : $true = Reset immediately.; $false = Only set expiration time.
+    #    - [bool]$ForceResetForAzureTarget : $true = Reset anyway.; $false = Do not reset again if already done by system. (With Azure AD as Windows LAPS target.)
 
     # Debug/Log information
     WriteLogDebug "Starting reset sequence ..."
-    WriteLogDebug "Final reset task summary: $($LapsResetTasks -replace ';',',' -replace '@{','' -replace '}',',') DoResetImmediately=$($DoResetImmediately)"
+    WriteLogDebug "Final reset task summary: $($LapsResetTasks -replace ';',',' -replace '@{','' -replace '}',',') DoResetImmediately=$($DoResetImmediately), ForceResetForAzureTarget=$($ForceResetForAzureTarget)"
     WriteLogDebug "Executing user account: $env:Username"
     if ($DoResetImmediately) { WriteLogInfo "Immediate reset is enabled." } Else { WriteLogInfo "Immediate reset is disabled. - Only expiration time will be set." }
 
@@ -577,8 +609,30 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
                     ExitWithCodeMessage -errorCode 510 -errorMessage "ERROR: Failed to reset password for Windows LAPS user! - The user does not exist."
                 }
 
-                # We don't need special credentials here because the system account is allowed to reset the password.
-                Reset-LapsPassword
+                # If Azure is the target, the reset may been done by the system already. (This is because the expiration time is stored locally and the information gets lost on reinstall.)
+                # In this case we skip the reset if it is not forced by the package variable.
+                [bool] $isAzureExpTime = Confirm-RegValueIsDefined -RegPath "HKLM:\Software\Microsoft\Windows\CurrentVersion\LAPS\State" -RegValueName "AzurePasswordExpiryTime"
+                if ($LapsResetTasks.WinLapsIsAzureTarget -and $isAzureExpTime -and ($ForceResetForAzureTarget -eq $false))
+                {
+                    [Int64] $regExpTime = Get-ItemPropertyValue -Path "HKLM:\Software\Microsoft\Windows\CurrentVersion\LAPS\State" -Name "AzurePasswordExpiryTime"
+                    [string] $azureExpTime = [DateTime]::FromFileTimeUtc($regExpTime).ToLocalTime().ToString()
+                    WriteLogDebug "The password is already reset and saved to Azure AD. New expiration time: $($azureExpTime) - The reset command is skipped."
+                }
+                else
+                {
+                    # Logging of special information.
+                    if ($LapsResetTasks.WinLapsIsAzureTarget -and $ForceResetForAzureTarget)
+                    {
+                        WriteLogInfo "WARNING: The reset for Azure AD environments is enforced by the package variable! - This is not recommended."
+                    }
+                    elseif ($LapsResetTasks.WinLapsIsAzureTarget -and ($isAzureExpTime -eq $false))
+                    {
+                        WriteLogDebug "Windows LAPS (with Azure AD as target) has not reset the password yet. - The script triggers the reset now."
+                    }
+
+                    # We don't need special credentials here because the system account is allowed to reset the password.
+                    Reset-LapsPassword
+                }
             }
             Else
             {
@@ -657,6 +711,7 @@ function Main() {
     [int]$varIntuneSyncTimeout = ReadEmpirumVariable -varName ResetLapsPassword.IntuneSyncTimeout -defaultValue 10
     [bool]$varLapsIsMandatory = ReadEmpirumVariable -varName ResetLapsPassword.LapsIsMandatory -isBoolean -defaultValue 0
     [bool]$varLapsResetImmediately = ReadEmpirumVariable -varName ResetLapsPassword.ResetImmediately -isBoolean -defaultValue 0
+    [bool]$varForceResetForAzureTarget = ReadEmpirumVariable -varName ResetLapsPassword.ForceResetForAzureTarget -isBoolean -defaultValue 0
 
     # Update device configuration and check if device is joined to an AD
     $isDeviceADJoined = Update-ClientMgmtConfiguration -IntuneSyncTimeout $varIntuneSyncTimeout
@@ -686,7 +741,7 @@ function Main() {
     }
 
     # Invoke LAPS reset tasks
-    Invoke-LapsResetCommands -LapsResetTasks $lapsResetTasks -DoResetImmediately $varLapsResetImmediately
+    Invoke-LapsResetCommands -LapsResetTasks $lapsResetTasks -DoResetImmediately $varLapsResetImmediately -ForceResetForAzureTarget $varForceResetForAzureTarget
 
     WriteLogDebug "Finished ResetLapsPassword package.";
 }
