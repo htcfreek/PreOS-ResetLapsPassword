@@ -1,8 +1,8 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 1.3
+Version: 1.4
 Developer: htcfreek (Heiko Horwedel)
-Created at: 16.04.2023
+Created at: 24.05.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 
 Systems requirements:
@@ -57,6 +57,7 @@ Changes (Date / Version / Author / Change):
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
 2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot.; Adding a description of the log levels.
 2023-04-16 / 1.3 / htcfreek / Fix detection of disabled state for Windows LAPS in Legacy Mode.; Add logging of "Force disabled" state.; Now the script can skip the reset on Windows LAPS with Azure AD as target, if already done.
+2023-05-24 / 1.4 / htcfreek / Fix getting Empirum variables.; Fix setting expiration time for Windows LAPS.; Additional non-existing user warnings.; Added hint about configuration details in debug log.; Other small improvements.
 
 #>
 
@@ -126,7 +127,13 @@ function ReadEmpirumVariable ([string] $varName, [Switch] $isPwd, [Switch] $retu
     #           $defaultValue = Value to return if variable is empty. If not set, the script aborts on an empty variable.
     # Return:   The variable content as plain text or SecureString.
 
-    $varContent = Get-EmpirumVariable -Property $varName -Decrypt $isPwd
+    # Using the if here is required because "Get-EmpirumVariable ... -Decrypt $isPwd" doesn't work with "$isPwd = $false"!! (GH #20)
+    if ($isPwd) {
+        $varContent = Get-EmpirumVariable -Property $varName -Decrypt
+    }
+    else {
+        $varContent = Get-EmpirumVariable -Property $varName
+    }
     $isVarContentEmpty = (($null -eq $varContent) -or ($varContent -eq "") -or ($varContent -eq " "))
 
     $logContent = if ($isPwd -and ($isVarContentEmpty -eq $false)) {"*****"} Else {$varContent}
@@ -520,9 +527,10 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     # Get configuration
     WriteLogDebug "Detecting LAPS configuration ..."
     $legacyLapsProperties = Get-LegacyLapsState;
-    $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
+    $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName) -and $legacyLapsProperties.Enabled) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
-    $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
+    $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName) -and $winLapsProperties.Enabled) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
+    WriteLogDebug "NOTICE: Some configuration details might be detected wrong in some edge cases if LAPS is not enabled."
     WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), GPO is disabled = $(ConvertTo-YesNo $legacyLapsProperties.ForceDisabled), Managed user = $($legacyLapsUser)"
     WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Configuration set to disabled = $(ConvertTo-YesNo $winLapsProperties.ForceDisabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
 
@@ -636,8 +644,14 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
             }
             Else
             {
+                # Checking user account ...
+                if ($LapsResetTasks.WinLapsUserExists -eq $false)
+                {
+                    WriteLogInfo "WARNING: The Windows LAPS user does not exist."
+                }
+
                 # We don't need special credentials here because the system account is allowed to reset the password.
-                Set-LapsADPasswordExpirationTime -ComputerName $env:computername
+                Set-LapsADPasswordExpirationTime -Identity $env:computername
             }
 
             WriteLogInfo "Password reset for Windows LAPS user: Successfully done."
@@ -656,6 +670,16 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
 
         try
         {
+            # Checking user account ...
+            if ($DoResetImmediately -and $LapsResetTasks.LegacyLapsUserExists -eq $false)
+            {
+                WriteLogInfo "WARNING: The Legacy Microsoft LAPS user does not exist! - Only expiration time will be set!"
+            }
+            elseif (($DoResetImmediately -eq $false) -and ($LapsResetTasks.WinLapsUserExists -eq $false))
+            {
+                WriteLogInfo "WARNING: The Legacy Microsoft LAPS user does not exist."
+            }
+
             # We don't need special credentials here because the system account is allowed to reset the password.
             Reset-AdmPwdPassword -ComputerName $env:computername
 
@@ -663,10 +687,6 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
             {
                 # We don't need special credentials here because the system account is allowed to reset the password.
                 & gpupdate.exe /target:computer /force
-            }
-            elseif ($DoResetImmediately -and $LapsResetTasks.LegacyLapsUserExists -eq $false)
-            {
-                WriteLogInfo "WARNING: Legacy Microsoft LAPS user does not exist! - Only expiration time was set!"
             }
 
             WriteLogInfo "Password reset for legacy Microsoft LAPS user: Successfully done."
