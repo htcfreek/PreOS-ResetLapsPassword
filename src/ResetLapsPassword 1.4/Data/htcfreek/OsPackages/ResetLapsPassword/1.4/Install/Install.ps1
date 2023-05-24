@@ -644,6 +644,12 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
             }
             Else
             {
+                # Checking user account ...
+                if ($LapsResetTasks.WinLapsUserExists -eq $false)
+                {
+                    WriteLogInfo "WARNING: The Windows LAPS user does not exist."
+                }
+
                 # We don't need special credentials here because the system account is allowed to reset the password.
                 Set-LapsADPasswordExpirationTime -Identity $env:computername
             }
@@ -664,6 +670,16 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
 
         try
         {
+            # Checking user account ...
+            if ($DoResetImmediately -and $LapsResetTasks.LegacyLapsUserExists -eq $false)
+            {
+                WriteLogInfo "WARNING: The Legacy Microsoft LAPS user does not exist! - Only expiration time will be set!"
+            }
+            elseif (($DoResetImmediately -eq $false) -and ($LapsResetTasks.WinLapsUserExists -eq $false))
+            {
+                WriteLogInfo "WARNING: The Legacy Microsoft LAPS user does not exist."
+            }
+
             # We don't need special credentials here because the system account is allowed to reset the password.
             Reset-AdmPwdPassword -ComputerName $env:computername
 
@@ -671,10 +687,6 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
             {
                 # We don't need special credentials here because the system account is allowed to reset the password.
                 & gpupdate.exe /target:computer /force
-            }
-            elseif ($DoResetImmediately -and $LapsResetTasks.LegacyLapsUserExists -eq $false)
-            {
-                WriteLogInfo "WARNING: Legacy Microsoft LAPS user does not exist! - Only expiration time was set!"
             }
 
             WriteLogInfo "Password reset for legacy Microsoft LAPS user: Successfully done."
