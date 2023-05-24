@@ -231,7 +231,6 @@
         <TokenId i:nil="true" />
         <TokenTtl>0</TokenTtl>
       </Software>
-      <Software />
     </ObjectModel>
   </ObjectModelSerialisation>
 </EmpirumPackage>
