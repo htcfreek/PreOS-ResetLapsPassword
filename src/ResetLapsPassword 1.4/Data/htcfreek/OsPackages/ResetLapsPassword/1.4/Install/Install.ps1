@@ -638,7 +638,7 @@ function Invoke-LapsResetCommands([PSCustomObject]$LapsResetTasks, [bool]$DoRese
             Else
             {
                 # We don't need special credentials here because the system account is allowed to reset the password.
-                Set-LapsADPasswordExpirationTime -ComputerName $env:computername
+                Set-LapsADPasswordExpirationTime -Identity $env:computername
             }
 
             WriteLogInfo "Password reset for Windows LAPS user: Successfully done."
