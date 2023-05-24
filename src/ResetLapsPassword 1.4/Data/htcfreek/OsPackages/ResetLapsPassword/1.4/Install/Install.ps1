@@ -527,9 +527,9 @@ function Get-LapsResetTasks([bool]$LapsIsMandatory)
     # Get configuration
     WriteLogDebug "Detecting LAPS configuration ..."
     $legacyLapsProperties = Get-LegacyLapsState;
-    $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
+    $legacyLapsUser = if ([string]::IsNullOrWhiteSpace($legacyLapsProperties.UserName) -and $legacyLapsProperties.Enabled) { "<Built-in Administrator>" } Else { $legacyLapsProperties.UserName };
     $winLapsProperties = Get-WindowsLapsState -IsLegacyCSE $legacyLapsProperties.Installed;
-    $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName)) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
+    $winLapsUser = if ([string]::IsNullOrWhiteSpace($winLapsProperties.UserName) -and $winLapsProperties.Enabled) { "<Built-in Administrator>" } Else { $winLapsProperties.UserName };
     WriteLogDebug "NOTICE: Some configuration details might be detected wrong if LAPS is not enabled."
     WriteLogDebug "Legacy Microsoft LAPS: Installed = $(ConvertTo-YesNo $legacyLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $legacyLapsProperties.Enabled), GPO is disabled = $(ConvertTo-YesNo $legacyLapsProperties.ForceDisabled), Managed user = $($legacyLapsUser)"
     WriteLogDebug "Windows LAPS: Installed = $(ConvertTo-YesNo $winLapsProperties.Installed), Enabled = $(ConvertTo-YesNo $winLapsProperties.Enabled), Configuration set to disabled = $(ConvertTo-YesNo $winLapsProperties.ForceDisabled), Managed user = $($winLapsUser), Configuration source = $($winLapsProperties.ConfigSource), Target Directory = $($winLapsProperties.TargetDirectory), Legacy emulation mode = $(ConvertTo-YesNo $winLapsProperties.LegacyEmulation)"
