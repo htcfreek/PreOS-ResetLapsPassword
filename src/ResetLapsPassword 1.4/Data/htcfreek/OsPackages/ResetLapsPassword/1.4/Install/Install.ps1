@@ -127,7 +127,13 @@ function ReadEmpirumVariable ([string] $varName, [Switch] $isPwd, [Switch] $retu
     #           $defaultValue = Value to return if variable is empty. If not set, the script aborts on an empty variable.
     # Return:   The variable content as plain text or SecureString.
 
-    $varContent = Get-EmpirumVariable -Property $varName -Decrypt $isPwd
+    # Using the if here is required because "Get-EmpirumVariable ... -Decrypt $isPwd" doesn't work with "$isPwd = $false"!! (GH #20)
+    if ($isPwd) {
+        $varContent = Get-EmpirumVariable -Property $varName -Decrypt
+    }
+    else {
+        $varContent = Get-EmpirumVariable -Property $varName
+    }
     $isVarContentEmpty = (($null -eq $varContent) -or ($varContent -eq "") -or ($varContent -eq " "))
 
     $logContent = if ($isPwd -and ($isVarContentEmpty -eq $false)) {"*****"} Else {$varContent}
