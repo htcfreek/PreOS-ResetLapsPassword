@@ -1,8 +1,8 @@
 ﻿<#
 Name: ResetLapsPassword
-Version: 1.3
+Version: 1.4
 Developer: htcfreek (Heiko Horwedel)
-Created at: 16.04.2023
+Created at: 24.05.2023
 Github URL: https://github.com/htcfreek/PreOS-ResetLapsPassword
 
 Systems requirements:
@@ -57,6 +57,7 @@ Changes (Date / Version / Author / Change):
 2023-03-30 / 1.1 / htcfreek / Fix incorrect detection of missing Windows LAPS on unsupported systems with missing Legacy CSE.; Clean up PXE log in EMC.; Other log improvements (reboot, managed user).
 2023-04-04 / 1.2 / htcfreek / Improved reboot behavior on pending Domain join reboot.; Adding a description of the log levels.
 2023-04-16 / 1.3 / htcfreek / Fix detection of disabled state for Windows LAPS in Legacy Mode.; Add logging of "Force disabled" state.; Now the script can skip the reset on Windows LAPS with Azure AD as target, if already done.
+2023-05-24 / 1.4 / htcfreek / Fix getting Empirum variables.; Fix setting expiration time for Windows LAPS.; Additional non-existing user warnings.; Added hint about configuration details in debug log.
 
 #>
 
