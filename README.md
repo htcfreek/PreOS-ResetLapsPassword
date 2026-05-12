@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> This repository and the package are no longer being actively developed, as there is no need for further development of this package.
+>
+> Tip: If your domain contains at least one Server 2025 domain controller, modern Windows LAPS uses a password version attribute to detect operating system rollbacks. ([Read more on Microsoft Learn.](https://learn.microsoft.com/en-us/windows-server/identity/laps/laps-concepts-overview#windows-laps-os-image-rollback-detection-and-mitigation))
+
 # ResetLapsPassword
 
 <!-- Name des Repositories muss immer klein geschrieben werden. -->
@@ -12,6 +17,7 @@ The package works with Windows 10 (Build 19041 and higher) or Windows 11. Legacy
 For more details about the LAPS modes, supported Operating Systems and configuration see the [LAPS configuration table](#LAPS-configuration-requirements) below.
 
 The package has the Legacy LAPS PowerShell module from the Microsoft LAPS installer included. (Link to the installer: <https://www.microsoft.com/en-us/download/details.aspx?id=46899>)
+
 
 ## Features
 
@@ -78,3 +84,7 @@ Product names and company names are trademarks (™) or registered (®) trademar
 
 This Repository is licensed to you under the MIT license.<br />
 See the [LICENSE](LICENSE.md) file in the project root for more information.
+
+### Third-party components
+
+This project contains third-party files from Microsoft: The [Legacy LAPS PowerShell module](src/ResetLapsPassword%201.4/Data/htcfreek/OsPackages/ResetLapsPassword/1.4/AdmPwd.PSModule/).
